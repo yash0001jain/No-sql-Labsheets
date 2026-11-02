@@ -1,0 +1,1201 @@
+ Q1. Student Activity Tracking System
+
+```javascript
+use StudentActivityDB
+
+db.Students.insertMany([
+    {
+        Student_ID: 101,
+        Name: "Yash Jain",
+        Courses: ["MongoDB", "Python"],
+        Attendance: 85,
+        Skills: ["Database", "Web Development"],
+        Activities: [
+            {Activity: "Assignment", Status: "Completed", Date: new Date()},
+            {Activity: "Quiz", Status: "Pending", Date: new Date()}
+        ]
+    },
+    {
+        Student_ID: 102,
+        Name: "Rahul",
+        Courses: ["Java", "MongoDB"],
+        Attendance: 75,
+        Skills: ["Java", "Database"],
+        Activities: [
+            {Activity: "Project", Status: "Completed", Date: new Date()}
+        ]
+    },
+    {
+        Student_ID: 103,
+        Name: "Priya",
+        Courses: ["Python", "Web Development"],
+        Attendance: 92,
+        Skills: ["Python", "HTML"],
+        Activities: [
+            {Activity: "Assignment", Status: "Completed", Date: new Date()}
+        ]
+    }
+])
+
+db.Students.find()
+
+db.Students.find({Attendance: {$gt: 80}})
+
+db.Students.find({Courses: "MongoDB"})
+
+db.Students.find({Skills: "Database"})
+
+db.Students.find({
+    "Activities.Status": "Pending"
+})
+
+db.Students.find({
+    "Activities.Activity": "Assignment"
+})
+
+db.Students.updateOne(
+    {Student_ID: 101},
+    {$push: {Skills: "MongoDB"}}
+)
+
+db.Students.find({
+    Attendance: {$lt: 80}
+})
+```
+
+Q2. Event Logging System
+```javascript
+use EventLogDB
+
+db.Events.insertMany([
+    {
+        User_ID: 101,
+        Event: "login",
+        Date: new Date()
+    },
+    {
+        User_ID: 101,
+        Event: "failed-login",
+        Date: new Date()
+    },
+    {
+        User_ID: 101,
+        Event: "failed-login",
+        Date: new Date()
+    },
+    {
+        User_ID: 102,
+        Event: "logout",
+        Date: new Date()
+    },
+    {
+        User_ID: 103,
+        Event: "file-upload",
+        Date: new Date()
+    },
+    {
+        User_ID: 101,
+        Event: "failed-login",
+        Date: new Date()
+    },
+    {
+        User_ID: 102,
+        Event: "password-change",
+        Date: new Date()
+    },
+    {
+        User_ID: 103,
+        Event: "login",
+        Date: new Date()
+    }
+])
+
+db.Events.find()
+
+db.Events.find({Event: "failed-login"})
+
+db.Events.aggregate([
+    {$match: {Event: "failed-login"}},
+    {
+        $group: {
+            _id: "$User_ID",
+            FailedAttempts: {$sum: 1}
+        }
+    },
+    {$match: {FailedAttempts: {$gte: 3}}}
+])
+
+db.Events.aggregate([
+    {
+        $group: {
+            _id: "$Event",
+            TotalEvents: {$sum: 1}
+        }
+    },
+    {$sort: {TotalEvents: -1}}
+])
+
+db.Events.find({Event: "login"})
+
+db.Events.find({Event: "file-upload"})
+```
+
+ Q3. Mini Blogging Platform
+
+```javascript
+use BloggingDB
+
+db.Blogs.insertMany([
+    {
+        Title: "Introduction to MongoDB",
+        Author: "Yash Jain",
+        Category: "Technology",
+        Tags: ["MongoDB", "Database", "NoSQL"],
+        Comments: [
+            {User: "Rahul", Message: "Great Article"}
+        ],
+        Published: true,
+        PublishDate: new Date()
+    },
+    {
+        Title: "Learning Python",
+        Author: "Rahul",
+        Category: "Programming",
+        Tags: ["Python", "Coding"],
+        Comments: [
+            {User: "Aman", Message: "Very Helpful"}
+        ],
+        Published: true,
+        PublishDate: new Date()
+    },
+    {
+        Title: "Web Development Guide",
+        Author: "Priya",
+        Category: "Technology",
+        Tags: ["HTML", "CSS", "JavaScript"],
+        Comments: [],
+        Published: false,
+        PublishDate: new Date()
+    },
+    {
+        Title: "NoSQL Database",
+        Author: "Yash Jain",
+        Category: "Education",
+        Tags: ["MongoDB", "NoSQL"],
+        Comments: [],
+        Published: true,
+        PublishDate: new Date()
+    }
+])
+
+db.Blogs.find()
+
+db.Blogs.find({Category: "Technology"})
+
+db.Blogs.find({Tags: "MongoDB"})
+
+db.Blogs.find({
+    Category: "Technology",
+    Tags: "MongoDB"
+})
+
+db.Blogs.find({
+    Tags: {$in: ["Python", "MongoDB"]}
+})
+
+db.Blogs.find({Published: true})
+
+db.Blogs.updateOne(
+    {Title: "Introduction to MongoDB"},
+    {
+        $push: {
+            Comments: {
+                User: "Aman",
+                Message: "Excellent"
+            }
+        }
+    }
+)
+```
+
+ Q4. Flexible Product Catalog
+
+```javascript
+use ProductCatalogDB
+
+db.Products.insertMany([
+    {
+        Product_ID: 101,
+        Name: "Dell Laptop",
+        Category: "Laptop",
+        Price: 55000,
+        RAM: "16GB",
+        Storage: "512GB SSD",
+        Processor: "Intel i5"
+    },
+    {
+        Product_ID: 102,
+        Name: "HP Laptop",
+        Category: "Laptop",
+        Price: 65000,
+        RAM: "16GB",
+        Storage: "1TB SSD",
+        Processor: "Intel i7"
+    },
+    {
+        Product_ID: 103,
+        Name: "Samsung Mobile",
+        Category: "Mobile",
+        Price: 25000,
+        RAM: "8GB",
+        Storage: "128GB",
+        Battery: "5000mAh"
+    },
+    {
+        Product_ID: 104,
+        Name: "iPhone",
+        Category: "Mobile",
+        Price: 70000,
+        RAM: "8GB",
+        Storage: "256GB",
+        Battery: "4000mAh"
+    },
+    {
+        Product_ID: 105,
+        Name: "Canon Camera",
+        Category: "Camera",
+        Price: 45000,
+        Megapixels: "24MP",
+        Lens: "18-55mm",
+        Sensor: "APS-C"
+    }
+])
+
+db.Products.find()
+
+db.Products.find({Category: "Laptop"})
+
+db.Products.find({RAM: "16GB"})
+
+db.Products.find({Category: "Mobile"})
+
+db.Products.find({Battery: "5000mAh"})
+
+db.Products.find({Category: "Camera"})
+
+db.Products.find({Megapixels: "24MP"})
+
+db.Products.find({
+    Category: "Laptop",
+    Price: {$lt: 60000}
+})
+```
+
+ Q5. E-Commerce Order Management System
+
+```javascript
+use EcommerceDB
+
+db.Customers.insertMany([
+    {Customer_ID: 101, Name: "Yash Jain", City: "Saharanpur"},
+    {Customer_ID: 102, Name: "Rahul", City: "Delhi"},
+    {Customer_ID: 103, Name: "Priya", City: "Noida"}
+])
+
+db.Products.insertMany([
+    {Product_ID: 1, Name: "Laptop", Price: 50000},
+    {Product_ID: 2, Name: "Mouse", Price: 500},
+    {Product_ID: 3, Name: "Keyboard", Price: 1000},
+    {Product_ID: 4, Name: "Mobile", Price: 20000}
+])
+
+db.Orders.insertMany([
+    {
+        Order_ID: 1,
+        Customer_ID: 101,
+        Products: [
+            {Product_ID: 1, Name: "Laptop", Price: 50000, Quantity: 1},
+            {Product_ID: 2, Name: "Mouse", Price: 500, Quantity: 2}
+        ],
+        OrderDate: new Date(),
+        Status: "Delivered"
+    },
+    {
+        Order_ID: 2,
+        Customer_ID: 101,
+        Products: [
+            {Product_ID: 3, Name: "Keyboard", Price: 1000, Quantity: 1}
+        ],
+        OrderDate: new Date(),
+        Status: "Shipped"
+    },
+    {
+        Order_ID: 3,
+        Customer_ID: 102,
+        Products: [
+            {Product_ID: 4, Name: "Mobile", Price: 20000, Quantity: 1}
+        ],
+        OrderDate: new Date(),
+        Status: "Delivered"
+    }
+])
+
+db.Customers.find()
+
+db.Products.find()
+
+db.Orders.find({Customer_ID: 101})
+
+db.Orders.aggregate([
+    {$match: {Customer_ID: 101}},
+    {$unwind: "$Products"},
+    {
+        $group: {
+            _id: "$Order_ID",
+            TotalAmount: {
+                $sum: {
+                    $multiply: [
+                        "$Products.Price",
+                        "$Products.Quantity"
+                    ]
+                }
+            }
+        }
+    }
+])
+
+db.Orders.aggregate([
+    {$unwind: "$Products"},
+    {
+        $group: {
+            _id: "$Customer_ID",
+            TotalPurchase: {
+                $sum: {
+                    $multiply: [
+                        "$Products.Price",
+                        "$Products.Quantity"
+                    ]
+                }
+            }
+        }
+    }
+])
+```
+
+ Q6. Website Analytics System
+
+```javascript
+use WebsiteAnalyticsDB
+
+db.Visits.insertMany([
+    {
+        Page: "/home",
+        User_ID: 101,
+        Device: "Mobile",
+        Browser: "Chrome",
+        Location: "India",
+        Timestamp: new Date()
+    },
+    {
+        Page: "/products",
+        User_ID: 102,
+        Device: "Laptop",
+        Browser: "Firefox",
+        Location: "India",
+        Timestamp: new Date()
+    },
+    {
+        Page: "/home",
+        User_ID: 103,
+        Device: "Mobile",
+        Browser: "Chrome",
+        Location: "India",
+        Timestamp: new Date()
+    },
+    {
+        Page: "/about",
+        User_ID: 104,
+        Device: "Laptop",
+        Browser: "Chrome",
+        Location: "India",
+        Timestamp: new Date()
+    },
+    {
+        Page: "/home",
+        User_ID: 105,
+        Device: "Tablet",
+        Browser: "Safari",
+        Location: "India",
+        Timestamp: new Date()
+    },
+    {
+        Page: "/products",
+        User_ID: 106,
+        Device: "Mobile",
+        Browser: "Chrome",
+        Location: "India",
+        Timestamp: new Date()
+    }
+])
+
+db.Visits.find()
+
+db.Visits.aggregate([
+    {
+        $group: {
+            _id: "$Page",
+            TotalVisits: {$sum: 1}
+        }
+    },
+    {$sort: {TotalVisits: -1}}
+])
+
+db.Visits.aggregate([
+    {
+        $group: {
+            _id: "$Device",
+            TotalUsers: {$sum: 1}
+        }
+    },
+    {$sort: {TotalUsers: -1}}
+])
+
+db.Visits.aggregate([
+    {
+        $group: {
+            _id: "$Browser",
+            TotalVisits: {$sum: 1}
+        }
+    }
+])
+
+db.Visits.find({Location: "India"})
+```
+
+ Q7. Content Management System
+
+```javascript
+use CMSDB
+
+db.Articles.insertMany([
+    {
+        Article_ID: 1,
+        Title: "MongoDB Tutorial",
+        Author: "Yash Jain",
+        Category: "Technology",
+        Tags: ["MongoDB", "Database"],
+        Status: "Published",
+        PublishDate: new Date()
+    },
+    {
+        Article_ID: 2,
+        Title: "Python Basics",
+        Author: "Rahul",
+        Category: "Education",
+        Tags: ["Python", "Programming"],
+        Status: "Draft",
+        PublishDate: null
+    },
+    {
+        Article_ID: 3,
+        Title: "Web Development",
+        Author: "Priya",
+        Category: "Technology",
+        Tags: ["HTML", "CSS"],
+        Status: "Published",
+        PublishDate: new Date()
+    },
+    {
+        Article_ID: 4,
+        Title: "Database Management",
+        Author: "Aman",
+        Category: "Education",
+        Tags: ["Database", "SQL"],
+        Status: "Draft",
+        PublishDate: null
+    }
+])
+
+db.Articles.find()
+
+db.Articles.find({Status: "Published"})
+
+db.Articles.find({Status: "Draft"})
+
+db.Articles.find({Category: "Technology"})
+
+db.Articles.find({Tags: "MongoDB"})
+
+db.Articles.find({
+    Status: "Published",
+    Category: "Technology"
+})
+
+db.Articles.updateOne(
+    {Article_ID: 2},
+    {
+        $set: {
+            Status: "Published",
+            PublishDate: new Date()
+        }
+    }
+)
+```
+
+Q8. Shopping Cart System Using Embedded Documents
+
+```javascript
+use ShoppingCartDB
+
+db.Carts.insertOne({
+    Cart_ID: 101,
+    Customer: "Yash Jain",
+    Products: [
+        {
+            Product_ID: 1,
+            Name: "Laptop",
+            Price: 50000,
+            Quantity: 1
+        },
+        {
+            Product_ID: 2,
+            Name: "Mouse",
+            Price: 500,
+            Quantity: 2
+        }
+    ]
+})
+
+db.Carts.find()
+
+db.Carts.updateOne(
+    {Cart_ID: 101},
+    {
+        $push: {
+            Products: {
+                Product_ID: 3,
+                Name: "Keyboard",
+                Price: 1000,
+                Quantity: 1
+            }
+        }
+    }
+)
+
+db.Carts.updateOne(
+    {Cart_ID: 101, "Products.Product_ID": 2},
+    {$set: {"Products.$.Quantity": 3}}
+)
+
+db.Carts.updateOne(
+    {Cart_ID: 101},
+    {
+        $pull: {
+            Products: {Product_ID: 3}
+        }
+    }
+)
+
+db.Carts.aggregate([
+    {$match: {Cart_ID: 101}},
+    {$unwind: "$Products"},
+    {
+        $group: {
+            _id: "$Cart_ID",
+            CartValue: {
+                $sum: {
+                    $multiply: [
+                        "$Products.Price",
+                        "$Products.Quantity"
+                    ]
+                }
+            }
+        }
+    }
+])
+```
+
+ Q9. Product Review and Rating System
+
+```javascript
+use ProductReviewDB
+
+db.Reviews.insertMany([
+    {
+        Product_ID: 101,
+        Customer: "Yash",
+        Rating: 5,
+        Review: "Excellent Product"
+    },
+    {
+        Product_ID: 101,
+        Customer: "Rahul",
+        Rating: 4,
+        Review: "Very Good"
+    },
+    {
+        Product_ID: 102,
+        Customer: "Aman",
+        Rating: 3,
+        Review: "Average Product"
+    },
+    {
+        Product_ID: 102,
+        Customer: "Priya",
+        Rating: 5,
+        Review: "Excellent"
+    },
+    {
+        Product_ID: 103,
+        Customer: "Neha",
+        Rating: 4,
+        Review: "Good Quality"
+    }
+])
+
+db.Reviews.find()
+
+db.Reviews.aggregate([
+    {
+        $group: {
+            _id: "$Product_ID",
+            AverageRating: {$avg: "$Rating"},
+            TotalReviews: {$sum: 1}
+        }
+    },
+    {$sort: {AverageRating: -1}}
+])
+
+db.Reviews.find({Product_ID: 101})
+
+db.Reviews.aggregate([
+    {$match: {Rating: 5}},
+    {
+        $group: {
+            _id: "$Product_ID",
+            FiveStarReviews: {$sum: 1}
+        }
+    }
+])
+```
+
+ Q10. Inventory Monitoring System
+
+```javascript
+use InventoryDB
+
+db.Products.insertMany([
+    {
+        Product_ID: 101,
+        Name: "Laptop",
+        Stock: 5,
+        MinimumStock: 10,
+        Supplier: "Dell Supplier",
+        RestockingDate: new Date("2026-11-10")
+    },
+    {
+        Product_ID: 102,
+        Name: "Mouse",
+        Stock: 50,
+        MinimumStock: 10,
+        Supplier: "HP Supplier",
+        RestockingDate: new Date("2026-11-15")
+    },
+    {
+        Product_ID: 103,
+        Name: "Keyboard",
+        Stock: 3,
+        MinimumStock: 10,
+        Supplier: "Logitech Supplier",
+        RestockingDate: new Date("2026-11-05")
+    },
+    {
+        Product_ID: 104,
+        Name: "Mobile",
+        Stock: 20,
+        MinimumStock: 15,
+        Supplier: "Samsung Supplier",
+        RestockingDate: new Date("2026-11-20")
+    },
+    {
+        Product_ID: 105,
+        Name: "Camera",
+        Stock: 2,
+        MinimumStock: 5,
+        Supplier: "Canon Supplier",
+        RestockingDate: new Date("2026-11-08")
+    }
+])
+
+db.Products.find()
+
+db.Products.find({
+    $expr: {
+        $lte: ["$Stock", "$MinimumStock"]
+    }
+})
+
+db.Products.find({
+    Stock: {$lt: 5}
+})
+
+db.Products.updateOne(
+    {Product_ID: 101},
+    {$inc: {Stock: 20}}
+)
+
+db.Products.find({
+    $expr: {
+        $lte: ["$Stock", "$MinimumStock"]
+    }
+})
+```
+
+ Q11. Bank Wallet Transfer Using MongoDB Transactions
+
+```javascript
+use BankDB
+
+db.Wallets.insertMany([
+    {
+        User_ID: 101,
+        Name: "Yash Jain",
+        Balance: 10000
+    },
+    {
+        User_ID: 102,
+        Name: "Rahul",
+        Balance: 5000
+    }
+])
+
+db.Wallets.find()
+
+const session = db.getMongo().startSession()
+
+const bankDB = session.getDatabase("BankDB")
+
+session.startTransaction()
+
+try {
+    const sender = bankDB.Wallets.updateOne(
+        {
+            User_ID: 101,
+            Balance: {$gte: 2000}
+        },
+        {
+            $inc: {Balance: -2000}
+        }
+    )
+
+    if (sender.matchedCount !== 1) {
+        throw new Error("Insufficient balance or sender not found")
+    }
+
+    const receiver = bankDB.Wallets.updateOne(
+        {User_ID: 102},
+        {
+            $inc: {Balance: 2000}
+        }
+    )
+
+    if (receiver.matchedCount !== 1) {
+        throw new Error("Receiver not found")
+    }
+
+    session.commitTransaction()
+    print("Transaction Successful")
+
+} catch (error) {
+    session.abortTransaction()
+    print("Transaction Failed: " + error.message)
+
+} finally {
+    session.endSession()
+}
+
+db.Wallets.find()
+```
+
+ Q12. User Notification System
+
+```javascript
+use NotificationDB
+
+db.Notifications.insertMany([
+    {
+        User_ID: 101,
+        Type: "Message",
+        Message: "You have a new message",
+        Read: false,
+        Date: new Date()
+    },
+    {
+        User_ID: 101,
+        Type: "Order Update",
+        Message: "Your order has been shipped",
+        Read: false,
+        Date: new Date()
+    },
+    {
+        User_ID: 102,
+        Type: "System Alert",
+        Message: "System maintenance scheduled",
+        Read: true,
+        Date: new Date()
+    },
+    {
+        User_ID: 101,
+        Type: "Message",
+        Message: "Your account is updated",
+        Read: true,
+        Date: new Date()
+    },
+    {
+        User_ID: 102,
+        Type: "Order Update",
+        Message: "Your order is delivered",
+        Read: false,
+        Date: new Date()
+    }
+])
+
+db.Notifications.find()
+
+db.Notifications.find({
+    User_ID: 101,
+    Read: false
+})
+
+db.Notifications.updateMany(
+    {
+        User_ID: 101,
+        Read: false
+    },
+    {
+        $set: {Read: true}
+    }
+)
+
+db.Notifications.find({
+    User_ID: 101,
+    Read: true
+})
+
+db.Notifications.countDocuments({
+    User_ID: 101,
+    Read: false
+})
+```
+
+Q13. Course Learning Platform
+```javascript
+use LearningPlatformDB
+
+db.Courses.insertMany([
+    {
+        Course_ID: 1,
+        Name: "MongoDB",
+        Instructor: "Mr. Sharma",
+        Modules: ["Introduction", "CRUD", "Aggregation"]
+    },
+    {
+        Course_ID: 2,
+        Name: "Python",
+        Instructor: "Mr. Verma",
+        Modules: ["Basics", "Functions", "OOP"]
+    },
+    {
+        Course_ID: 3,
+        Name: "Web Development",
+        Instructor: "Mrs. Gupta",
+        Modules: ["HTML", "CSS", "JavaScript"]
+    }
+])
+
+db.Enrollments.insertMany([
+    {
+        Student_ID: 101,
+        Name: "Yash Jain",
+        Course_ID: 1,
+        Progress: 80,
+        Completed: false
+    },
+    {
+        Student_ID: 102,
+        Name: "Rahul",
+        Course_ID: 1,
+        Progress: 100,
+        Completed: true
+    },
+    {
+        Student_ID: 103,
+        Name: "Aman",
+        Course_ID: 2,
+        Progress: 40,
+        Completed: false
+    },
+    {
+        Student_ID: 104,
+        Name: "Priya",
+        Course_ID: 3,
+        Progress: 90,
+        Completed: false
+    },
+    {
+        Student_ID: 105,
+        Name: "Neha",
+        Course_ID: 2,
+        Progress: 100,
+        Completed: true
+    }
+])
+
+db.Courses.find()
+
+db.Enrollments.find()
+
+db.Enrollments.find({
+    Progress: {$gt: 50}
+})
+
+db.Enrollments.find({
+    Completed: true
+})
+
+db.Enrollments.find({
+    Course_ID: 1
+})
+
+db.Enrollments.updateOne(
+    {Student_ID: 101, Course_ID: 1},
+    {
+        $set: {
+            Progress: 100,
+            Completed: true
+        }
+    }
+)
+
+db.Enrollments.find({
+    Progress: {$lt: 50}
+})
+```
+
+ Q14. Real-Time Order Tracking System
+
+```javascript
+use OrderTrackingDB
+
+db.Orders.insertMany([
+    {
+        Order_ID: 101,
+        Customer: "Yash Jain",
+        CurrentStatus: "Placed",
+        StatusHistory: [
+            {
+                Status: "Placed",
+                Date: new Date()
+            }
+        ]
+    },
+    {
+        Order_ID: 102,
+        Customer: "Rahul",
+        CurrentStatus: "Confirmed",
+        StatusHistory: [
+            {
+                Status: "Placed",
+                Date: new Date()
+            },
+            {
+                Status: "Confirmed",
+                Date: new Date()
+            }
+        ]
+    },
+    {
+        Order_ID: 103,
+        Customer: "Aman",
+        CurrentStatus: "Shipped",
+        StatusHistory: [
+            {
+                Status: "Placed",
+                Date: new Date()
+            },
+            {
+                Status: "Confirmed",
+                Date: new Date()
+            },
+            {
+                Status: "Shipped",
+                Date: new Date()
+            }
+        ]
+    }
+])
+
+db.Orders.find()
+
+db.Orders.updateOne(
+    {Order_ID: 101},
+    {
+        $set: {
+            CurrentStatus: "Confirmed"
+        },
+        $push: {
+            StatusHistory: {
+                Status: "Confirmed",
+                Date: new Date()
+            }
+        }
+    }
+)
+
+db.Orders.updateOne(
+    {Order_ID: 101},
+    {
+        $set: {
+            CurrentStatus: "Shipped"
+        },
+        $push: {
+            StatusHistory: {
+                Status: "Shipped",
+                Date: new Date()
+            }
+        }
+    }
+)
+
+db.Orders.updateOne(
+    {Order_ID: 101},
+    {
+        $set: {
+            CurrentStatus: "Delivered"
+        },
+        $push: {
+            StatusHistory: {
+                Status: "Delivered",
+                Date: new Date()
+            }
+        }
+    }
+)
+
+db.Orders.findOne({
+    Order_ID: 101
+})
+
+db.Orders.find({
+    CurrentStatus: "Delivered"
+})
+
+db.Orders.find(
+    {Order_ID: 101},
+    {StatusHistory: 1, _id: 0}
+)
+```
+
+ Q15. Flexible News Database
+
+```javascript
+use NewsDB
+
+db.Articles.insertMany([
+    {
+        Article_ID: 101,
+        Title: "Technology News",
+        Author: "Yash Jain",
+        Category: "Technology",
+        Location: "India",
+        Tags: ["AI", "Technology"],
+        Images: ["news1.jpg"],
+        Sources: ["News Website"],
+        Date: new Date()
+    },
+    {
+        Article_ID: 102,
+        Title: "Sports News",
+        Author: "Rahul",
+        Category: "Sports",
+        Tags: ["Cricket", "Sports"],
+        Sources: ["Sports Channel"],
+        Date: new Date()
+    },
+    {
+        Article_ID: 103,
+        Title: "Business News",
+        Category: "Business",
+        Location: "Delhi",
+        Images: ["business.jpg"],
+        Date: new Date()
+    },
+    {
+        Article_ID: 104,
+        Title: "Education News",
+        Author: "Priya",
+        Category: "Education",
+        Tags: ["College", "Education"],
+        Location: "Noida",
+        Sources: ["Education Portal"],
+        Date: new Date()
+    },
+    {
+        Article_ID: 105,
+        Title: "AI Development News",
+        Author: "Aman",
+        Category: "Technology",
+        Tags: ["AI", "Machine Learning"],
+        Images: ["ai.jpg"],
+        Date: new Date()
+    }
+])
+
+db.Articles.find()
+
+db.Articles.find({
+    Category: "Technology"
+})
+
+db.Articles.find({
+    Tags: "AI"
+})
+
+db.Articles.find({
+    Location: "India"
+})
+
+db.Articles.find({
+    Author: {$exists: true}
+})
+
+db.Articles.find({
+    Images: {$exists: true}
+})
+
+db.Articles.find({
+    Category: "Technology",
+    Tags: "AI"
+})
+
+db.Articles.find({
+    $or: [
+        {Category: "Sports"},
+        {Category: "Business"}
+    ]
+})
+
+db.Articles.find({
+    Title: {$regex: "News", $options: "i"}
+})
+
+db.Articles.updateOne(
+    {Article_ID: 103},
+    {
+        $set: {
+            Author: "Yash Jain",
+            Tags: ["Business", "Finance"]
+        }
+    }
+)
+```
