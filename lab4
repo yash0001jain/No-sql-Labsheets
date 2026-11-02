@@ -1,0 +1,936 @@
+ Q1. Install and Configure Apache HBase. Create a Student Table
+
+ Installation and Configuration
+
+Download and extract Apache HBase, then open the HBase configuration file.
+
+File: `conf/hbase-site.xml`
+
+```xml
+<configuration>
+    <property>
+        <name>hbase.rootdir</name>
+        <value>file:///tmp/hbase</value>
+    </property>
+    <property>
+        <name>hbase.cluster.distributed</name>
+        <value>false</value>
+    </property>
+</configuration>
+```
+
+Start HBase:
+
+```bash
+bin/start-hbase.sh
+```
+
+Open HBase Shell:
+
+```bash
+bin/hbase shell
+```
+
+### Create Student Table
+
+```ruby
+create 'Student', 'personal', 'academic'
+```
+
+ Insert Five Student Records
+
+```ruby
+put 'Student', '101', 'personal:name', 'Yash'
+put 'Student', '101', 'personal:city', 'Saharanpur'
+put 'Student', '101', 'academic:course', 'BCA'
+put 'Student', '101', 'academic:semester', '5'
+
+put 'Student', '102', 'personal:name', 'Rahul'
+put 'Student', '102', 'personal:city', 'Delhi'
+put 'Student', '102', 'academic:course', 'BCA'
+put 'Student', '102', 'academic:semester', '5'
+
+put 'Student', '103', 'personal:name', 'Aman'
+put 'Student', '103', 'personal:city', 'Noida'
+put 'Student', '103', 'academic:course', 'BBA'
+put 'Student', '103', 'academic:semester', '3'
+
+put 'Student', '104', 'personal:name', 'Priya'
+put 'Student', '104', 'personal:city', 'Meerut'
+put 'Student', '104', 'academic:course', 'BCA'
+put 'Student', '104', 'academic:semester', '4'
+
+put 'Student', '105', 'personal:name', 'Neha'
+put 'Student', '105', 'personal:city', 'Jaipur'
+put 'Student', '105', 'academic:course', 'MCA'
+put 'Student', '105', 'academic:semester', '1'
+```
+
+ Display Records
+
+```ruby
+scan 'Student'
+```
+
+ Expected Output
+
+Five student records with personal and academic information will be displayed.
+
+---
+
+ Q2. Perform CRUD Operations on Employee Table Using HBase
+
+ Create Table
+
+```ruby
+create 'Employee', 'personal', 'job'
+```
+
+ Insert Records
+
+```ruby
+put 'Employee', 'E101', 'personal:name', 'Amit'
+put 'Employee', 'E101', 'personal:city', 'Delhi'
+put 'Employee', 'E101', 'job:department', 'IT'
+put 'Employee', 'E101', 'job:salary', '35000'
+
+put 'Employee', 'E102', 'personal:name', 'Rohit'
+put 'Employee', 'E102', 'personal:city', 'Noida'
+put 'Employee', 'E102', 'job:department', 'HR'
+put 'Employee', 'E102', 'job:salary', '30000'
+```
+
+ Read a Record
+
+```ruby
+get 'Employee', 'E101'
+```
+
+ Display All Records
+
+```ruby
+scan 'Employee'
+```
+
+ Update a Record
+
+```ruby
+put 'Employee', 'E101', 'job:salary', '40000'
+```
+
+ Delete a Column
+
+```ruby
+delete 'Employee', 'E101', 'personal:city'
+```
+
+ Delete a Complete Row
+
+```ruby
+deleteall 'Employee', 'E102'
+```
+
+ Expected Output
+
+Employee records are created, displayed, updated and deleted successfully.
+
+---
+ Q3. Create an Event Logging System Using HBase
+
+Create Table
+
+```ruby
+create 'EventLog', 'event', 'user', 'details'
+```
+ Insert Sample Events
+
+```ruby
+put 'EventLog', 'EV101', 'event:timestamp', '2026-11-01 10:00:00'
+put 'EventLog', 'EV101', 'event:type', 'Login'
+put 'EventLog', 'event:user:name', 'Yash'
+put 'EventLog', 'EV101', 'user:id', 'U101'
+put 'EventLog', 'EV101', 'details:status', 'Success'
+
+put 'EventLog', 'EV102', 'event:timestamp', '2026-11-01 10:15:00'
+put 'EventLog', 'EV102', 'event:type', 'Payment'
+put 'EventLog', 'EV102', 'user:id', 'U102'
+put 'EventLog', 'EV102', 'details:status', 'Pending'
+
+put 'EventLog', 'EV103', 'event:timestamp', '2026-11-01 10:30:00'
+put 'EventLog', 'EV103', 'event:type', 'Logout'
+put 'EventLog', 'EV103', 'user:id', 'U101'
+put 'EventLog', 'EV103', 'details:status', 'Success'
+```
+
+ Retrieve an Event Using Row Key
+
+```ruby
+get 'EventLog', 'EV101'
+```
+
+ Display All Events
+
+```ruby
+scan 'EventLog'
+```
+
+ Expected Output
+
+The system stores event ID, timestamp, user ID, event type and status.
+
+---
+
+ Q4. Create a Content Management System Using HBase
+
+ Create Table
+
+```ruby
+create 'CMS', 'content', 'author', 'metadata'
+```
+
+### Insert Content
+
+```ruby
+put 'CMS', 'C101', 'content:title', 'Introduction to HBase'
+put 'CMS', 'C101', 'content:description', 'HBase is a NoSQL database'
+put 'CMS', 'C101', 'author:name', 'Yash'
+put 'CMS', 'C101', 'metadata:category', 'Technology'
+put 'CMS', 'C101', 'metadata:status', 'Published'
+
+put 'CMS', 'C102', 'content:title', 'Introduction to Cassandra'
+put 'CMS', 'C102', 'content:description', 'Cassandra is a distributed database'
+put 'CMS', 'C102', 'author:name', 'Rahul'
+put 'CMS', 'C102', 'metadata:category', 'Database'
+put 'CMS', 'C102', 'metadata:status', 'Draft'
+```
+
+### Retrieve Content
+
+```ruby
+get 'CMS', 'C101'
+```
+
+### Update Content
+
+```ruby
+put 'CMS', 'C101', 'content:title', 'Advanced HBase Tutorial'
+put 'CMS', 'C101', 'metadata:status', 'Updated'
+```
+
+### Display All Content
+
+```ruby
+scan 'CMS'
+```
+
+### Delete Content
+
+```ruby
+deleteall 'CMS', 'C102'
+```
+
+### Expected Output
+
+CMS records are inserted, retrieved, updated and deleted successfully.
+
+---
+
+## Q5. Implement a Blogging Platform Using HBase
+
+### Create Table
+
+```ruby
+create 'Blog', 'blog', 'author', 'comments'
+```
+
+### Insert Three Blog Records
+
+```ruby
+put 'Blog', 'B101', 'blog:title', 'Learning HBase'
+put 'Blog', 'B101', 'blog:description', 'Introduction to HBase database'
+put 'Blog', 'B101', 'author:name', 'Yash'
+put 'Blog', 'B101', 'author:email', 'yash@gmail.com'
+put 'Blog', 'B101', 'comments:comment1', 'Very informative'
+
+put 'Blog', 'B102', 'blog:title', 'Learning Cassandra'
+put 'Blog', 'B102', 'blog:description', 'Introduction to Cassandra'
+put 'Blog', 'B102', 'author:name', 'Rahul'
+put 'Blog', 'B102', 'comments:comment1', 'Nice article'
+
+put 'Blog', 'B103', 'blog:title', 'NoSQL Databases'
+put 'Blog', 'B103', 'blog:description', 'Types of NoSQL databases'
+put 'Blog', 'B103', 'author:name', 'Aman'
+put 'Blog', 'B103', 'comments:comment1', 'Good explanation'
+```
+
+### Retrieve a Particular Blog
+
+```ruby
+get 'Blog', 'B101'
+```
+
+### Display All Blogs
+
+```ruby
+scan 'Blog'
+```
+
+### Expected Output
+
+Three blog records are stored with blog details, author information and comments.
+
+---
+
+## Q6. Demonstrate Column-Family Data Model in HBase
+
+### Create Table with Multiple Column Families
+
+```ruby
+create 'College', 'personal', 'academic', 'contact'
+```
+
+### Insert Different Qualifiers
+
+```ruby
+put 'College', 'S101', 'personal:name', 'Yash'
+put 'College', 'S101', 'personal:age', '21'
+put 'College', 'S101', 'academic:course', 'BCA'
+put 'College', 'S101', 'academic:semester', '5'
+put 'College', 'S101', 'contact:email', 'yash@gmail.com'
+put 'College', 'S101', 'contact:phone', '9876543210'
+```
+
+### Display Table Structure
+
+```ruby
+describe 'College'
+```
+
+### Retrieve Data
+
+```ruby
+get 'College', 'S101'
+```
+
+### Display All Records
+
+```ruby
+scan 'College'
+```
+
+### Explanation
+
+HBase stores data using column families. Each column family contains multiple qualifiers.
+
+For example:
+
+- personal: name, age
+- academic: course, semester
+- contact: email, phone
+
+The column family is defined when the table is created. New qualifiers can be added dynamically while inserting data.
+
+---
+
+ Q7. Create Website Page-View Counters Using HBase
+
+### Create Table
+
+```ruby
+create 'WebsiteCounter', 'views'
+```
+
+### Insert Initial Counters
+
+```ruby
+put 'WebsiteCounter', 'home', 'views:count', '0'
+put 'WebsiteCounter', 'about', 'views:count', '0'
+put 'WebsiteCounter', 'contact', 'views:count', '0'
+```
+
+### Increment Page Views
+
+```ruby
+incr 'WebsiteCounter', 'home', 'views:count', 1
+incr 'WebsiteCounter', 'home', 'views:count', 1
+incr 'WebsiteCounter', 'about', 'views:count', 1
+incr 'WebsiteCounter', 'contact', 'views:count', 1
+incr 'WebsiteCounter', 'contact', 'views:count', 1
+incr 'WebsiteCounter', 'contact', 'views:count', 1
+```
+
+### Display Updated Counters
+
+```ruby
+get 'WebsiteCounter', 'home'
+get 'WebsiteCounter', 'about'
+get 'WebsiteCounter', 'contact'
+scan 'WebsiteCounter'
+```
+
+### Expected Output
+
+- Home page views: 2
+- About page views: 1
+- Contact page views: 3
+
+---
+
+## Q8. Implement Expiring Session Data Using HBase TTL
+
+### Create Table with TTL
+
+```ruby
+create 'UserSession', {NAME => 'session', TTL => 60}, 'user'
+```
+
+The TTL value is 60 seconds.
+
+### Insert Session Records
+
+```ruby
+put 'UserSession', 'S101', 'session:token', 'TOKEN101'
+put 'UserSession', 'S101', 'session:status', 'Active'
+put 'UserSession', 'S101', 'user:name', 'Yash'
+
+put 'UserSession', 'S102', 'session:token', 'TOKEN102'
+put 'UserSession', 'S102', 'session:status', 'Active'
+put 'UserSession', 'S102', 'user:name', 'Rahul'
+```
+
+### Retrieve Session Data
+
+```ruby
+get 'UserSession', 'S101'
+scan 'UserSession'
+```
+
+### Verify TTL
+
+Wait for more than 60 seconds and then run:
+
+```ruby
+scan 'UserSession'
+```
+
+### Expected Output
+
+Session column-family values expire after the configured TTL. Physical cleanup may happen later during HBase compaction, so expired data may not disappear immediately from storage.
+
+---
+
+## Q9. Design a Large-Scale Application Using HBase Row Keys
+
+### Create Table
+
+```ruby
+create 'Orders', 'order', 'customer'
+```
+
+### Insert Records Using a Row-Key Strategy
+
+```ruby
+put 'Orders', '01_ORDER101', 'order:amount', '5000'
+put 'Orders', '02_ORDER102', 'order:amount', '7000'
+put 'Orders', '03_ORDER103', 'order:amount', '9000'
+put 'Orders', '04_ORDER104', 'order:amount', '6000'
+
+put 'Orders', '01_ORDER101', 'customer:name', 'Yash'
+put 'Orders', '02_ORDER102', 'customer:name', 'Rahul'
+put 'Orders', '03_ORDER103', 'customer:name', 'Aman'
+put 'Orders', '04_ORDER104', 'customer:name', 'Priya'
+```
+
+### Retrieve Records
+
+```ruby
+get 'Orders', '01_ORDER101'
+scan 'Orders'
+```
+
+### Explanation
+
+A good row-key design helps distribute data across HBase regions.
+
+In this example, different prefixes are used in row keys. This can help divide records into different key ranges when suitable region boundaries are configured.
+
+For a large-scale system, a hash or salt prefix can also help prevent too many writes from going to one region. The row-key strategy should be selected according to the application's query requirements.
+
+---
+
+## Q10. Create Multiple Regions and Demonstrate Data Distribution in HBase
+
+### Create Table with Pre-Split Regions
+
+```ruby
+create 'Sales', 'details', {NUMREGIONS => 3, SPLITALGO => 'HexStringSplit'}
+```
+
+### Insert Records
+
+```ruby
+put 'Sales', '100000', 'details:product', 'Laptop'
+put 'Sales', '200000', 'details:product', 'Mobile'
+put 'Sales', '500000', 'details:product', 'Tablet'
+put 'Sales', '800000', 'details:product', 'Keyboard'
+put 'Sales', 'A00000', 'details:product', 'Mouse'
+```
+
+### Display Records
+
+```ruby
+scan 'Sales'
+```
+
+### Check Region Information
+
+```ruby
+list_regions 'Sales'
+```
+
+If `list_regions` is unavailable in your HBase version, use the HBase Master Web UI to view region assignments.
+
+### Explanation
+
+HBase divides large tables into regions based on row-key ranges.
+
+- Each region stores a range of rows.
+- RegionServers manage and serve regions.
+- When a table grows, regions can split into smaller regions.
+- Regions can be assigned to different RegionServers.
+- Replication and failover help improve availability.
+
+---
+
+## Q11. Install and Configure Apache Cassandra. Create CollegeDB and Students Table
+
+### Start Cassandra
+
+Start the Cassandra service using the command suitable for your installation.
+
+For a local installation, open the Cassandra terminal and run:
+
+```bash
+cassandra -f
+```
+
+Open another terminal and connect using:
+
+```bash
+cqlsh
+```
+
+### Create Keyspace
+
+```sql
+CREATE KEYSPACE CollegeDB
+WITH replication = {
+    'class': 'SimpleStrategy',
+    'replication_factor': 1
+};
+```
+
+### Use Keyspace
+
+```sql
+USE CollegeDB;
+```
+
+### Create Students Table
+
+```sql
+CREATE TABLE Students (
+    student_id int PRIMARY KEY,
+    name text,
+    city text,
+    course text,
+    semester int
+);
+```
+
+### Insert Five Records
+
+```sql
+INSERT INTO Students VALUES (101, 'Yash', 'Saharanpur', 'BCA', 5);
+
+INSERT INTO Students VALUES (102, 'Rahul', 'Delhi', 'BCA', 5);
+
+INSERT INTO Students VALUES (103, 'Aman', 'Noida', 'BBA', 3);
+
+INSERT INTO Students VALUES (104, 'Priya', 'Meerut', 'BCA', 4);
+
+INSERT INTO Students VALUES (105, 'Neha', 'Jaipur', 'MCA', 1);
+```
+
+### Retrieve All Records
+
+```sql
+SELECT * FROM Students;
+```
+
+### Expected Output
+
+Five student records will be displayed from the Students table.
+
+---
+
+## Q12. Perform CRUD Operations on Employees Table Using Cassandra
+
+### Create Table
+
+```sql
+CREATE TABLE Employees (
+    employee_id int PRIMARY KEY,
+    name text,
+    department text,
+    salary double,
+    city text
+);
+```
+
+### Insert Records
+
+```sql
+INSERT INTO Employees
+(employee_id, name, department, salary, city)
+VALUES (101, 'Amit', 'IT', 35000, 'Delhi');
+
+INSERT INTO Employees
+(employee_id, name, department, salary, city)
+VALUES (102, 'Rahul', 'HR', 30000, 'Noida');
+
+INSERT INTO Employees
+(employee_id, name, department, salary, city)
+VALUES (103, 'Priya', 'Finance', 40000, 'Meerut');
+```
+
+### Read Records
+
+```sql
+SELECT * FROM Employees;
+
+SELECT * FROM Employees
+WHERE employee_id = 101;
+```
+
+### Update Record
+
+```sql
+UPDATE Employees
+SET salary = 45000
+WHERE employee_id = 101;
+```
+
+### Delete Record
+
+```sql
+DELETE FROM Employees
+WHERE employee_id = 102;
+```
+
+### Verify Changes
+
+```sql
+SELECT * FROM Employees;
+```
+
+### Expected Output
+
+Employee records are inserted, retrieved, updated and deleted successfully.
+
+---
+
+## Q13. Create an Event Logging Application Using Cassandra
+
+### Create Keyspace
+
+```sql
+CREATE KEYSPACE EventDB
+WITH replication = {
+    'class': 'SimpleStrategy',
+    'replication_factor': 1
+};
+```
+
+### Use Keyspace
+
+```sql
+USE EventDB;
+```
+
+### Create Event Table
+
+```sql
+CREATE TABLE Events (
+    user_id int,
+    event_time timestamp,
+    event_id int,
+    event_type text,
+    status text,
+    PRIMARY KEY (user_id, event_time, event_id)
+) WITH CLUSTERING ORDER BY (event_time DESC);
+```
+
+### Insert Events
+
+```sql
+INSERT INTO Events VALUES
+(101, '2026-11-01 10:00:00', 1, 'Login', 'Success');
+
+INSERT INTO Events VALUES
+(101, '2026-11-01 10:30:00', 2, 'Payment', 'Success');
+
+INSERT INTO Events VALUES
+(101, '2026-11-01 11:00:00', 3, 'Logout', 'Success');
+
+INSERT INTO Events VALUES
+(102, '2026-11-01 10:15:00', 4, 'Login', 'Success');
+
+INSERT INTO Events VALUES
+(102, '2026-11-01 11:15:00', 5, 'Payment', 'Failed');
+```
+
+### Retrieve Events for a Particular User
+
+```sql
+SELECT * FROM Events
+WHERE user_id = 101;
+```
+
+### Retrieve Events Within a Time Period
+
+```sql
+SELECT * FROM Events
+WHERE user_id = 101
+AND event_time >= '2026-11-01 10:00:00'
+AND event_time <= '2026-11-01 11:00:00';
+```
+
+### Expected Output
+
+The application displays events for a selected user and time period.
+
+---
+
+## Q14. Demonstrate Availability and Consistency in Cassandra
+
+### Create Keyspace with Replication Factor 3
+
+This example requires a Cassandra cluster with at least three nodes for meaningful replication testing.
+
+```sql
+CREATE KEYSPACE ConsistencyDB
+WITH replication = {
+    'class': 'SimpleStrategy',
+    'replication_factor': 3
+};
+```
+
+### Use Keyspace
+
+```sql
+USE ConsistencyDB;
+```
+
+### Create Table
+
+```sql
+CREATE TABLE Products (
+    product_id int PRIMARY KEY,
+    product_name text,
+    price double
+);
+```
+
+### Insert Data Using ONE Consistency
+
+```sql
+CONSISTENCY ONE;
+
+INSERT INTO Products
+(product_id, product_name, price)
+VALUES (101, 'Laptop', 55000);
+```
+
+### Read Data Using ONE
+
+```sql
+CONSISTENCY ONE;
+
+SELECT * FROM Products
+WHERE product_id = 101;
+```
+
+### Write Data Using QUORUM
+
+```sql
+CONSISTENCY QUORUM;
+
+INSERT INTO Products
+(product_id, product_name, price)
+VALUES (102, 'Mobile', 25000);
+```
+
+### Read Data Using QUORUM
+
+```sql
+CONSISTENCY QUORUM;
+
+SELECT * FROM Products
+WHERE product_id = 102;
+```
+
+### Write Data Using ALL
+
+```sql
+CONSISTENCY ALL;
+
+INSERT INTO Products
+(product_id, product_name, price)
+VALUES (103, 'Tablet', 30000);
+```
+
+### Read Data Using ALL
+
+```sql
+CONSISTENCY ALL;
+
+SELECT * FROM Products
+WHERE product_id = 103;
+```
+
+### Explanation
+
+- ONE: Only one replica needs to respond.
+- QUORUM: A majority of replicas must respond.
+- ALL: All replicas must respond.
+
+For replication factor 3:
+
+- ONE requires 1 replica.
+- QUORUM requires 2 replicas.
+- ALL requires 3 replicas.
+
+Higher consistency levels generally require more replica responses and can reduce availability during node failures. The actual result depends on cluster health and replica placement.
+
+---
+
+## Q15. Design and Implement a Column-Oriented NoSQL Application Using Cassandra
+
+### Project: Event Logging Application
+
+Cassandra is selected to implement an Event Logging Application.
+
+### Step 1: Create Keyspace
+
+```sql
+CREATE KEYSPACE LoggingDB
+WITH replication = {
+    'class': 'SimpleStrategy',
+    'replication_factor': 1
+};
+```
+
+### Step 2: Use Keyspace
+
+```sql
+USE LoggingDB;
+```
+
+### Step 3: Create Events Table
+
+```sql
+CREATE TABLE UserEvents (
+    user_id int,
+    event_time timestamp,
+    event_id int,
+    event_type text,
+    status text,
+    description text,
+    PRIMARY KEY (user_id, event_time, event_id)
+) WITH CLUSTERING ORDER BY (event_time DESC);
+```
+
+### Step 4: Insert Records
+
+```sql
+INSERT INTO UserEvents VALUES
+(101, '2026-11-01 10:00:00', 1, 'Login', 'Success', 'User logged in');
+
+INSERT INTO UserEvents VALUES
+(101, '2026-11-01 10:30:00', 2, 'Payment', 'Success', 'Payment completed');
+
+INSERT INTO UserEvents VALUES
+(102, '2026-11-01 11:00:00', 3, 'Login', 'Success', 'User logged in');
+
+INSERT INTO UserEvents VALUES
+(103, '2026-11-01 11:30:00', 4, 'Logout', 'Success', 'User logged out');
+```
+
+### Step 5: Retrieve Records
+
+```sql
+SELECT * FROM UserEvents;
+```
+
+### Retrieve Events for User 101
+
+```sql
+SELECT * FROM UserEvents
+WHERE user_id = 101;
+```
+
+### Step 6: Update Record
+
+```sql
+UPDATE UserEvents
+SET status = 'Verified'
+WHERE user_id = 101
+AND event_time = '2026-11-01 10:00:00'
+AND event_id = 1;
+```
+
+### Step 7: Delete Record
+
+```sql
+DELETE FROM UserEvents
+WHERE user_id = 103
+AND event_time = '2026-11-01 11:30:00'
+AND event_id = 4;
+```
+
+### Step 8: Display Final Records
+
+```sql
+SELECT * FROM UserEvents;
+```
+
+### Explanation of Cassandra Features
+
+**1. Consistency**
+
+Cassandra provides tunable consistency using levels such as ONE, QUORUM and ALL.
+
+**2. Availability**
+
+Cassandra is designed for high availability. Data can be replicated across multiple nodes.
+
+**3. Transactions**
+
+Cassandra supports atomic operations within a single partition and lightweight transactions using conditional statements such as IF NOT EXISTS.
+
+**4. Query Features**
+
+Cassandra uses CQL (Cassandra Query Language). It supports INSERT, SELECT, UPDATE and DELETE operations.
+
+**5. Scaling**
+
+Cassandra uses a distributed architecture. New nodes can be added to increase storage and processing capacity.
+
+**6. Column-Oriented Model**
+
+Cassandra stores data in rows with named columns. Tables are organized around a partition key and clustering columns.
+
+### Conclusion
+
+The Event Logging Application was successfully implemented using Apache Cassandra. It demonstrates table creation, insertion, retrieval, updating and deletion of records. Cassandra provides distributed storage, tunable consistency, high availability and horizontal scalability.
