@@ -1,0 +1,328 @@
+Q1. Create StudentDB database
+
+use StudentDB
+
+db.createCollection("Students")
+
+db
+
+q2 create Students, Faculty and Courses collections
+
+db.createCollection("Faculty")
+
+db.createCollection("Courses")
+
+show collections
+
+
+ Q3. Insert a single document into Students
+
+db.Students.insertOne({
+    RollNo: 101,
+    Name: "Yash Jain",
+    Department: "BCA",
+    Semester: 5,
+    CGPA: 8.5
+})
+
+ Q4. Insert multiple student documents
+
+db.Students.insertMany([
+    {
+        RollNo: 102,
+        Name: "Rahul",
+        Department: "BCA",
+        Semester: 5,
+        CGPA: 8.2
+    },
+    {
+        RollNo: 103,
+        Name: "Aman",
+        Department: "BBA",
+        Semester: 4,
+        CGPA: 7.8
+    },
+    {
+        RollNo: 104,
+        Name: "Priya",
+        Department: "BCA",
+        Semester: 5,
+        CGPA: 9.1
+    },
+    {
+        RollNo: 105,
+        Name: "Neha",
+        Department: "MCA",
+        Semester: 2,
+        CGPA: 8.7
+    }
+])
+
+ Q5. Retrieve all student documents
+
+db.Students.find()
+
+
+ Q6. Find student using Roll Number
+
+db.Students.findOne({
+    RollNo: 101
+})
+
+
+Q7. Find students by Department
+
+db.Students.find({
+    Department: "BCA"
+})
+
+
+Q8. Display only Name and Department
+
+db.Students.find(
+    {},
+    {
+        Name: 1,
+        Department: 1,
+        _id: 0
+    }
+)
+
+
+Q9. Update department of a specific student
+
+db.Students.updateOne(
+    { RollNo: 101 },
+    {
+        $set: {
+            Department: "MCA"
+        }
+    }
+)
+
+
+ Q10. Update semester of all BCA students
+
+db.Students.updateMany(
+    { Department: "BCA" },
+    {
+        $set: {
+            Semester: 6
+        }
+    }
+)
+
+
+ Q11. Replace an existing student document
+
+db.Students.replaceOne(
+    { RollNo: 102 },
+    {
+        RollNo: 102,
+        Name: "Rahul Sharma",
+        Department: "BCA",
+        Semester: 5,
+        CGPA: 8.8
+    }
+)
+
+
+Q12. Add Email field to all students
+
+db.Students.updateMany(
+    {},
+    {
+        $set: {
+            Email: "student@example.com"
+        }
+    }
+)
+
+
+Q13. Remove Email field from all students
+
+db.Students.updateMany(
+    {},
+    {
+        $unset: {
+            Email: ""
+        }
+    }
+)
+
+
+Q14. Delete a specific student
+
+db.Students.deleteOne({
+    RollNo: 105
+})
+
+Q15. Delete multiple students with CGPA less than 8
+
+db.Students.deleteMany({
+    CGPA: {
+        $lt: 8
+    }
+})
+
+
+Q16. Count total students
+
+db.Students.countDocuments()
+
+
+ Q17. Rename Students collection
+
+db.Students.renameCollection("StudentDetails")
+
+show collections
+
+
+ Q18. Create Departments collection and insert data
+
+db.createCollection("Departments")
+
+db.Departments.insertMany([
+    {
+        DeptID: 1,
+        Department: "BCA",
+        HOD: "Mr. Sharma"
+    },
+    {
+        DeptID: 2,
+        Department: "BBA",
+        HOD: "Mr. Verma"
+    },
+    {
+        DeptID: 3,
+        Department: "MCA",
+        HOD: "Mrs. Gupta"
+    }
+])
+
+db.Departments.find()
+
+Q19. Drop Departments collection
+
+db.Departments.drop()
+
+show collections
+
+
+ Q20. Drop StudentDB database
+
+db.dropDatabase()
+
+
+Q21. Recreate StudentDB and insert sample data
+
+use StudentDB
+
+db.createCollection("Students")
+
+db.Students.insertMany([
+    {
+        RollNo: 201,
+        Name: "Yash Jain",
+        Department: "BCA",
+        Semester: 5,
+        CGPA: 8.5
+    },
+    {
+        RollNo: 202,
+        Name: "Rahul",
+        Department: "BCA",
+        Semester: 5,
+        CGPA: 8.2
+    }
+])
+
+db.Students.find()
+
+
+Q22. CRUD operations using MongoDB Compass
+
+ Create
+ Insert a new document through Compass.
+
+ Read
+ Open Students collection and view documents.
+
+ Update
+ Edit a student's information.
+
+ Delete
+ Select a document and delete it.
+
+
+ Q23. MongoDB Shell and MongoDB Compass
+
+Shell commands
+
+show dbs
+show collections
+
+db.Students.find()
+
+ Compass operations are performed
+ through the graphical user interface.
+
+
+ Q24. Compare MongoDB with SQL
+
+ SQL INSERT
+ INSERT INTO Students VALUES
+ (301, 'Aman', 'BCA', 5, 8.5);
+
+ MongoDB INSERT
+db.Students.insertOne({
+    RollNo: 301,
+    Name: "Aman",
+    Department: "BCA",
+    Semester: 5,
+    CGPA: 8.5
+})
+
+ SQL SELECT
+ SELECT * FROM Students;
+
+ MongoDB SELECT
+db.Students.find()
+
+ SQL UPDATE
+ UPDATE Students SET Department='MCA'
+ WHERE RollNo=301;
+
+ MongoDB UPDATE
+db.Students.updateOne(
+    { RollNo: 301 },
+    {
+        $set: {
+            Department: "MCA"
+        }
+    }
+)
+
+SQL DELETE
+DELETE FROM Students WHERE RollNo=301;
+
+ MongoDB DELETE
+db.Students.deleteOne({
+    RollNo: 301
+})
+
+
+Q25. Laboratory Report
+
+Objective:
+To understand NoSQL database design using MongoDB.
+
+ Operations performed:
+ 1. Database creation
+ 2. Collection creation
+ 3. Document insertion
+ 4. Document retrieval
+ 5. Document updating
+ 6. Document deletion
+ 7. Collection management
+ 8. Database management
