@@ -1,0 +1,768 @@
+Q1 
+
+CREATE DATABASE CollegeDB;
+USE CollegeDB;
+
+CREATE TABLE Student (
+    Student_ID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Course VARCHAR(30),
+    Semester INT,
+    Marks INT
+);
+
+INSERT INTO Student VALUES
+(101, 'Yash Jain', 'BCA', 5, 85),
+(102, 'Rahul', 'BCA', 5, 78),
+(103, 'Aman', 'BBA', 4, 82),
+(104, 'Priya', 'MCA', 2, 91),
+(105, 'Neha', 'BCA', 5, 88);
+
+SELECT * FROM Student;
+```
+
+### MongoDB Code
+
+```javascript
+use CollegeDB
+
+db.Students.insertMany([
+    {Student_ID: 101, Name: "Yash Jain", Course: "BCA", Semester: 5, Marks: 85},
+    {Student_ID: 102, Name: "Rahul", Course: "BCA", Semester: 5, Marks: 78},
+    {Student_ID: 103, Name: "Aman", Course: "BBA", Semester: 4, Marks: 82},
+    {Student_ID: 104, Name: "Priya", Course: "MCA", Semester: 2, Marks: 91},
+    {Student_ID: 105, Name: "Neha", Course: "BCA", Semester: 5, Marks: 88}
+])
+
+db.Students.find()
+```
+
+ Q2. Create CollegeDB Database and Perform CRUD Operations
+
+```javascript
+use CollegeDB
+
+db.createCollection("Students")
+
+db.Students.insertMany([
+    {Student_ID: 101, Name: "Yash Jain", Course: "BCA", Semester: 5, Marks: 85},
+    {Student_ID: 102, Name: "Rahul", Course: "BCA", Semester: 5, Marks: 78},
+    {Student_ID: 103, Name: "Aman", Course: "BBA", Semester: 4, Marks: 82},
+    {Student_ID: 104, Name: "Priya", Course: "MCA", Semester: 2, Marks: 91},
+    {Student_ID: 105, Name: "Neha", Course: "BCA", Semester: 5, Marks: 88}
+])
+
+db.Students.find()
+
+db.Students.find({Course: "BCA"})
+
+db.Students.updateOne(
+    {Student_ID: 101},
+    {$set: {Marks: 95}}
+)
+
+db.Students.deleteOne({Student_ID: 105})
+
+db.Students.countDocuments()
+```
+
+Q3. Create Orders Collection with Embedded Documents
+
+```javascript
+use ShoppingDB
+
+db.createCollection("Orders")
+
+db.Orders.insertMany([
+    {
+        Order_ID: 1,
+        Customer: "Yash",
+        Products: [
+            {Name: "Laptop", Price: 50000, Quantity: 1},
+            {Name: "Mouse", Price: 500, Quantity: 2}
+        ]
+    },
+    {
+        Order_ID: 2,
+        Customer: "Rahul",
+        Products: [
+            {Name: "Mobile", Price: 20000, Quantity: 1}
+        ]
+    },
+    {
+        Order_ID: 3,
+        Customer: "Aman",
+        Products: [
+            {Name: "Keyboard", Price: 1000, Quantity: 2}
+        ]
+    },
+    {
+        Order_ID: 4,
+        Customer: "Priya",
+        Products: [
+            {Name: "Tablet", Price: 15000, Quantity: 1}
+        ]
+    },
+    {
+        Order_ID: 5,
+        Customer: "Neha",
+        Products: [
+            {Name: "Headphones", Price: 2000, Quantity: 2}
+        ]
+    }
+])
+
+db.Orders.find({Customer: "Yash"})
+
+db.Orders.updateOne(
+    {Order_ID: 1, "Products.Name": "Mouse"},
+    {$set: {"Products.$.Quantity": 3}}
+)
+
+db.Orders.aggregate([
+    {$unwind: "$Products"},
+    {
+        $group: {
+            _id: "$Order_ID",
+            Customer: {$first: "$Customer"},
+            TotalAmount: {
+                $sum: {
+                    $multiply: ["$Products.Price", "$Products.Quantity"]
+                }
+            }
+        }
+    }
+])
+
+db.Orders.aggregate([
+    {$unwind: "$Products"},
+    {
+        $group: {
+            _id: "$Order_ID",
+            Customer: {$first: "$Customer"},
+            TotalAmount: {
+                $sum: {
+                    $multiply: ["$Products.Price", "$Products.Quantity"]
+                }
+            }
+        }
+    },
+    {$match: {TotalAmount: {$gt: 5000}}}
+])
+```
+
+Q4. Create Student Information System Using Redis
+
+```redis
+SET 101 "Yash Jain"
+SET 102 "Rahul"
+SET 103 "Aman"
+SET 104 "Priya"
+SET 105 "Neha"
+
+GET 101
+
+SET 101 "Yash Kumar"
+
+GET 101
+
+DEL 105
+
+KEYS *
+```
+
+Q5. Create Cassandra Keyspace and Students Table
+
+```sql
+CREATE KEYSPACE CollegeDB
+WITH replication = {
+    'class': 'SimpleStrategy',
+    'replication_factor': 1
+};
+
+USE CollegeDB;
+
+CREATE TABLE Students (
+    Student_ID INT PRIMARY KEY,
+    Name TEXT,
+    Course TEXT,
+    Semester INT,
+    Marks INT
+);
+
+INSERT INTO Students VALUES
+(101, 'Yash Jain', 'BCA', 5, 85);
+
+INSERT INTO Students VALUES
+(102, 'Rahul', 'BCA', 5, 78);
+
+INSERT INTO Students VALUES
+(103, 'Aman', 'BBA', 4, 82);
+
+INSERT INTO Students VALUES
+(104, 'Priya', 'MCA', 2, 91);
+
+INSERT INTO Students VALUES
+(105, 'Neha', 'BCA', 5, 88);
+
+SELECT * FROM Students;
+
+CREATE INDEX course_index ON Students(Course);
+
+SELECT * FROM Students
+WHERE Course = 'BCA';
+
+UPDATE Students
+SET Marks = 95
+WHERE Student_ID = 101;
+
+DELETE FROM Students
+WHERE Student_ID = 105;
+```
+
+Q6. Create Students Table Using HBase
+
+```hbase
+create 'Students', 'personal', 'academic'
+
+put 'Students', '101', 'personal:Name', 'Yash Jain'
+put 'Students', '101', 'personal:Course', 'BCA'
+put 'Students', '101', 'academic:Semester', '5'
+put 'Students', '101', 'academic:Marks', '85'
+
+put 'Students', '102', 'personal:Name', 'Rahul'
+put 'Students', '102', 'personal:Course', 'BCA'
+put 'Students', '102', 'academic:Semester', '5'
+put 'Students', '102', 'academic:Marks', '78'
+
+put 'Students', '103', 'personal:Name', 'Aman'
+put 'Students', '103', 'personal:Course', 'BBA'
+put 'Students', '103', 'academic:Semester', '4'
+put 'Students', '103', 'academic:Marks', '82'
+
+put 'Students', '104', 'personal:Name', 'Priya'
+put 'Students', '104', 'personal:Course', 'MCA'
+put 'Students', '104', 'academic:Semester', '2'
+put 'Students', '104', 'academic:Marks', '91'
+
+put 'Students', '105', 'personal:Name', 'Neha'
+put 'Students', '105', 'personal:Course', 'BCA'
+put 'Students', '105', 'academic:Semester', '5'
+put 'Students', '105', 'academic:Marks', '88'
+
+get 'Students', '101'
+
+put 'Students', '101', 'academic:Marks', '95'
+
+scan 'Students'
+
+delete 'Students', '105'
+```
+
+ Q7. Create Student-Course Relationship Using Neo4j
+
+```cypher
+CREATE
+(yash:Student {Student_ID: 101, Name: 'Yash Jain'}),
+(rahul:Student {Student_ID: 102, Name: 'Rahul'}),
+(aman:Student {Student_ID: 103, Name: 'Aman'}),
+(priya:Student {Student_ID: 104, Name: 'Priya'}),
+(neha:Student {Student_ID: 105, Name: 'Neha'})
+
+CREATE
+(bca:Course {Name: 'BCA'}),
+(bba:Course {Name: 'BBA'}),
+(mca:Course {Name: 'MCA'})
+
+MATCH (s:Student {Student_ID: 101}),
+(c:Course {Name: 'BCA'})
+CREATE (s)-[:ENROLLED_IN]->(c)
+
+MATCH (s:Student {Student_ID: 102}),
+(c:Course {Name: 'BCA'})
+CREATE (s)-[:ENROLLED_IN]->(c)
+
+MATCH (s:Student {Student_ID: 103}),
+(c:Course {Name: 'BBA'})
+CREATE (s)-[:ENROLLED_IN]->(c)
+
+MATCH (s:Student {Student_ID: 104}),
+(c:Course {Name: 'MCA'})
+CREATE (s)-[:ENROLLED_IN]->(c)
+
+MATCH (s:Student {Student_ID: 105}),
+(c:Course {Name: 'BCA'})
+CREATE (s)-[:ENROLLED_IN]->(c)
+
+MATCH (s:Student)
+RETURN s
+
+MATCH (s:Student)-[:ENROLLED_IN]->(c:Course {Name: 'BCA'})
+RETURN s
+
+MATCH (s:Student {Name: 'Yash Jain'})-[:ENROLLED_IN]->(c:Course)
+RETURN c
+
+MATCH (s:Student {Student_ID: 101}),
+(c:Course {Name: 'MCA'})
+CREATE (s)-[:ENROLLED_IN]->(c)
+
+MATCH (s:Student {Student_ID: 101})-[r:ENROLLED_IN]->(c:Course {Name: 'MCA'})
+DELETE r
+```
+
+Q8. Compare MongoDB, Cassandra and Neo4j
+
+```text
+MongoDB
+
+Data Model: Document Based
+Storage Structure: BSON Documents
+Query Method: MongoDB Query Language
+Scalability: Horizontal and Vertical
+Applications: Student Management, E-Commerce
+
+Cassandra
+
+Data Model: Column Family
+Storage Structure: Rows and Columns
+Query Method: Cassandra Query Language
+Scalability: Horizontal
+Applications: Banking, Big Data, IoT
+
+Neo4j
+
+Data Model: Graph Based
+Storage Structure: Nodes and Relationships
+Query Method: Cypher Query Language
+Scalability: Distributed Graph Database
+Applications: Social Networks, Recommendation Systems
+
+Conclusion:
+
+MongoDB is suitable for flexible document storage.
+Cassandra is suitable for large distributed datasets.
+Neo4j is suitable for relationship-based data.
+```
+
+Q9. Deploy MongoDB on Local Machine
+```javascript
+use LocalDB
+
+db.createCollection("Students")
+
+db.Students.insertMany([
+    {Student_ID: 101, Name: "Yash Jain", Course: "BCA", Marks: 85},
+    {Student_ID: 102, Name: "Rahul", Course: "BCA", Marks: 78},
+    {Student_ID: 103, Name: "Aman", Course: "BBA", Marks: 82},
+    {Student_ID: 104, Name: "Priya", Course: "MCA", Marks: 91},
+    {Student_ID: 105, Name: "Neha", Course: "BCA", Marks: 88}
+])
+
+db.Students.find()
+
+db.Students.findOne({Student_ID: 101})
+
+db.Students.updateOne(
+    {Student_ID: 101},
+    {$set: {Marks: 95}}
+)
+
+db.Students.deleteOne({Student_ID: 105})
+
+db.Students.countDocuments()
+
+db.Students.find()
+```
+
+ Q10. Demonstrate Database Sharding Using MongoDB
+
+```bash
+mkdir -p ~/mongodb/config
+mkdir -p ~/mongodb/shard1
+mkdir -p ~/mongodb/shard2
+
+mongod --configsvr --replSet configRS --port 27019 --dbpath ~/mongodb/config --bind_ip localhost --fork --logpath ~/mongodb/config.log
+
+mongod --shardsvr --replSet shard1RS --port 27018 --dbpath ~/mongodb/shard1 --bind_ip localhost --fork --logpath ~/mongodb/shard1.log
+
+mongod --shardsvr --replSet shard2RS --port 27020 --dbpath ~/mongodb/shard2 --bind_ip localhost --fork --logpath ~/mongodb/shard2.log
+```
+
+Configuration server:
+
+```javascript
+rs.initiate({
+    _id: "configRS",
+    configsvr: true,
+    members: [
+        {_id: 0, host: "localhost:27019"}
+    ]
+})
+```
+
+Shard 1:
+
+```javascript
+rs.initiate({
+    _id: "shard1RS",
+    members: [
+        {_id: 0, host: "localhost:27018"}
+    ]
+})
+```
+
+Shard 2:
+
+```javascript
+rs.initiate({
+    _id: "shard2RS",
+    members: [
+        {_id: 0, host: "localhost:27020"}
+    ]
+})
+```
+
+Start MongoDB Router:
+
+```bash
+mongos --configdb configRS/localhost:27019 --port 27017 --bind_ip localhost --fork --logpath ~/mongodb/mongos.log
+```
+
+Connect to the router:
+
+```javascript
+sh.addShard("shard1RS/localhost:27018")
+sh.addShard("shard2RS/localhost:27020")
+
+sh.enableSharding("CollegeDB")
+
+use CollegeDB
+
+db.Students.insertMany([
+    {Student_ID: 101, Name: "Yash", Course: "BCA"},
+    {Student_ID: 102, Name: "Rahul", Course: "BCA"},
+    {Student_ID: 103, Name: "Aman", Course: "BBA"},
+    {Student_ID: 104, Name: "Priya", Course: "MCA"},
+    {Student_ID: 105, Name: "Neha", Course: "BCA"},
+    {Student_ID: 106, Name: "Raj", Course: "BBA"},
+    {Student_ID: 107, Name: "Simran", Course: "MCA"},
+    {Student_ID: 108, Name: "Karan", Course: "BCA"},
+    {Student_ID: 109, Name: "Riya", Course: "BBA"},
+    {Student_ID: 110, Name: "Amit", Course: "MCA"},
+    {Student_ID: 111, Name: "Mohit", Course: "BCA"},
+    {Student_ID: 112, Name: "Anjali", Course: "BBA"},
+    {Student_ID: 113, Name: "Pooja", Course: "MCA"},
+    {Student_ID: 114, Name: "Arjun", Course: "BCA"},
+    {Student_ID: 115, Name: "Nisha", Course: "BBA"},
+    {Student_ID: 116, Name: "Vikas", Course: "MCA"},
+    {Student_ID: 117, Name: "Sahil", Course: "BCA"},
+    {Student_ID: 118, Name: "Kavya", Course: "BBA"},
+    {Student_ID: 119, Name: "Deepak", Course: "MCA"},
+    {Student_ID: 120, Name: "Meena", Course: "BCA"}
+])
+
+db.Students.createIndex({Student_ID: "hashed"})
+
+sh.shardCollection(
+    "CollegeDB.Students",
+    {Student_ID: "hashed"}
+)
+
+sh.status()
+```
+
+Q11. Demonstrate Primary-Secondary Replication
+
+```bash
+mkdir -p ~/mongodb/replica1
+mkdir -p ~/mongodb/replica2
+mkdir -p ~/mongodb/replica3
+
+mongod --replSet rs0 --port 27021 --dbpath ~/mongodb/replica1 --bind_ip localhost --fork --logpath ~/mongodb/replica1.log
+
+mongod --replSet rs0 --port 27022 --dbpath ~/mongodb/replica2 --bind_ip localhost --fork --logpath ~/mongodb/replica2.log
+
+mongod --replSet rs0 --port 27023 --dbpath ~/mongodb/replica3 --bind_ip localhost --fork --logpath ~/mongodb/replica3.log
+```
+
+Connect to port 27021:
+
+```javascript
+rs.initiate({
+    _id: "rs0",
+    members: [
+        {_id: 0, host: "localhost:27021"},
+        {_id: 1, host: "localhost:27022"},
+        {_id: 2, host: "localhost:27023"}
+    ]
+})
+
+rs.status()
+
+use CollegeDB
+
+db.Students.insertMany([
+    {Student_ID: 101, Name: "Yash", Marks: 85},
+    {Student_ID: 102, Name: "Rahul", Marks: 78},
+    {Student_ID: 103, Name: "Aman", Marks: 82}
+])
+
+db.Students.find()
+```
+
+Connect to secondary:
+
+```javascript
+rs.secondaryOk()
+
+use CollegeDB
+
+db.Students.find()
+```
+
+Q12. Peer-to-Peer Replication Using Cassandra
+
+```sql
+CREATE KEYSPACE CollegeDB
+WITH replication = {
+    'class': 'NetworkTopologyStrategy',
+    'datacenter1': 3
+};
+
+USE CollegeDB;
+
+CREATE TABLE Students (
+    Student_ID INT PRIMARY KEY,
+    Name TEXT,
+    Course TEXT,
+    Marks INT
+);
+
+INSERT INTO Students VALUES
+(101, 'Yash Jain', 'BCA', 85);
+
+INSERT INTO Students VALUES
+(102, 'Rahul', 'BCA', 78);
+
+INSERT INTO Students VALUES
+(103, 'Aman', 'BBA', 82);
+
+INSERT INTO Students VALUES
+(104, 'Priya', 'MCA', 91);
+
+INSERT INTO Students VALUES
+(105, 'Neha', 'BCA', 88);
+
+SELECT * FROM Students;
+```
+
+Check Cassandra nodes:
+
+```bash
+nodetool status
+```
+
+Q13. Sharding and Replication Together
+
+```javascript
+sh.addShard("shard1RS/localhost:27018,localhost:27028,localhost:27038")
+
+sh.addShard("shard2RS/localhost:27020,localhost:27030,localhost:27040")
+
+sh.enableSharding("CollegeDB")
+
+use CollegeDB
+
+db.Students.insertMany([
+    {Student_ID: 101, Name: "Yash", Course: "BCA"},
+    {Student_ID: 102, Name: "Rahul", Course: "BCA"},
+    {Student_ID: 103, Name: "Aman", Course: "BBA"},
+    {Student_ID: 104, Name: "Priya", Course: "MCA"},
+    {Student_ID: 105, Name: "Neha", Course: "BCA"}
+])
+
+db.Students.createIndex({Student_ID: "hashed"})
+
+sh.shardCollection(
+    "CollegeDB.Students",
+    {Student_ID: "hashed"}
+)
+
+sh.status()
+
+db.Students.find()
+```
+
+Q14. Implement MapReduce Operation in MongoDB
+
+```javascript
+use CollegeDB
+
+db.Students.insertMany([
+    {Student_ID: 201, Name: "Yash", Course: "BCA", Marks: 85},
+    {Student_ID: 202, Name: "Rahul", Course: "BCA", Marks: 78},
+    {Student_ID: 203, Name: "Aman", Course: "BBA", Marks: 82},
+    {Student_ID: 204, Name: "Priya", Course: "MCA", Marks: 91},
+    {Student_ID: 205, Name: "Neha", Course: "BCA", Marks: 88}
+])
+
+var mapFunction = function() {
+    emit(this.Course, {
+        count: 1,
+        total: this.Marks
+    });
+};
+
+var reduceFunction = function(course, values) {
+    var result = {
+        count: 0,
+        total: 0
+    };
+
+    values.forEach(function(value) {
+        result.count += value.count;
+        result.total += value.total;
+    });
+
+    return result;
+};
+
+db.Students.mapReduce(
+    mapFunction,
+    reduceFunction,
+    {
+        out: "CourseResults"
+    }
+);
+
+db.CourseResults.find();
+
+db.CourseResults.find().forEach(function(doc) {
+    print(
+        "Course: " + doc._id +
+        " Students: " + doc.value.count +
+        " Average Marks: " +
+        (doc.value.total / doc.value.count)
+    );
+});
+```
+
+Q15. Study Database Distribution Models
+
+1. Single Server
+
+Client
+|
+Database Server
+|
+Database
+
+Data Distribution:
+All data is stored on one server.
+
+Failure Handling:
+If the server fails, the database becomes unavailable.
+
+Advantage:
+Easy to manage.
+
+Limitation:
+Limited scalability.
+
+Application:
+Small College Database.
+
+### 2. Sharding
+
+Client
+|
+MongoDB Router
+|          |
+Shard 1    Shard 2
+
+Data Distribution:
+Data is divided across multiple shards.
+
+Failure Handling:
+Unavailable shards can interrupt access unless replication is configured.
+
+Advantage:
+Handles large datasets.
+
+Limitation:
+Complex configuration.
+
+Application:
+E-Commerce Website.
+
+### 3. Master-Slave Replication
+
+Client
+|
+Primary Server
+|          |
+Secondary  Secondary
+
+Data Distribution:
+Primary copies data to secondary servers.
+
+Failure Handling:
+An eligible secondary can become primary through replica set election.
+
+Advantage:
+High availability.
+
+Limitation:
+More storage is required.
+
+Application:
+Banking Database.
+
+### 4. Peer-to-Peer Replication
+
+Node 1
+|       |
+Node 2 - Node 3
+
+Data Distribution:
+Multiple nodes participate in reading and writing data.
+
+Failure Handling:
+Other nodes continue working when one node fails, depending on replication settings.
+
+Advantage:
+No single primary server.
+
+Limitation:
+Consistency management is complex.
+
+Application:
+Distributed IoT Systems.
+
+### 5. Sharding and Replication
+
+Client
+|
+MongoDB Router
+|             |
+Shard 1       Shard 2
+|             |
+Primary       Primary
+|             |
+Secondary     Secondary
+
+Data Distribution:
+Data is divided into shards and each shard has replica servers.
+
+Failure Handling:
+Replica servers provide availability if a primary server fails.
+
+Advantage:
+Scalability and fault tolerance.
+
+Limitation:
+High setup and maintenance cost.
+
+Application:
+Large E-Commerce Platforms.
