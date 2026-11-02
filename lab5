@@ -1,0 +1,976 @@
+Q1. Install and Configure Riak KV on Linux. Create Students Bucket
+
+Installation using Docker on Ubuntu/Linux:
+
+Install Docker:
+
+```bash
+sudo apt update
+sudo apt install docker.io -y
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+
+Download and start Riak KV:
+
+```bash
+sudo docker pull basho/riak-kv
+sudo docker run -d --name riak -p 8098:8098 -p 8087:8087 basho/riak-kv
+```
+
+Check Riak container:
+
+```bash
+sudo docker ps
+```
+
+Create a Students bucket and insert a record:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/students/keys/101 \
+-H "Content-Type: application/json" \
+-d '{"name":"Yash","course":"BCA","city":"Saharanpur"}'
+```
+
+Retrieve the record:
+
+```bash
+curl http://localhost:8098/buckets/students/keys/101
+```
+
+Update the record:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/students/keys/101 \
+-H "Content-Type: application/json" \
+-d '{"name":"Yash Jain","course":"BCA","city":"Delhi"}'
+```
+
+Delete the record:
+
+```bash
+curl -X DELETE http://localhost:8098/buckets/students/keys/101
+```
+
+Q2. Create a User Sessions Application Using Riak KV
+
+Store session information:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/user_sessions/keys/S101 \
+-H "Content-Type: application/json" \
+-d '{"session_id":"S101","user_id":"U101","login_time":"2026-11-01 10:00:00","status":"Active"}'
+```
+
+Insert another session:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/user_sessions/keys/S102 \
+-H "Content-Type: application/json" \
+-d '{"session_id":"S102","user_id":"U102","login_time":"2026-11-01 11:00:00","status":"Active"}'
+```
+
+Retrieve session information:
+
+```bash
+curl http://localhost:8098/buckets/user_sessions/keys/S101
+```
+
+Update session status:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/user_sessions/keys/S101 \
+-H "Content-Type: application/json" \
+-d '{"session_id":"S101","user_id":"U101","login_time":"2026-11-01 10:00:00","status":"Logged Out"}'
+```
+
+Q3. Store User Profiles and Preferences Using Riak KV
+
+Create a user profile:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/user_profiles/keys/U101 \
+-H "Content-Type: application/json" \
+-d '{"name":"Yash","email":"yash@gmail.com","city":"Saharanpur","language":"English","theme":"Dark","notifications":true}'
+```
+
+Insert another profile:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/user_profiles/keys/U102 \
+-H "Content-Type: application/json" \
+-d '{"name":"Rahul","email":"rahul@gmail.com","city":"Delhi","language":"Hindi","theme":"Light","notifications":false}'
+```
+
+Retrieve user profile:
+
+```bash
+curl http://localhost:8098/buckets/user_profiles/keys/U101
+```
+
+Update user preferences:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/user_profiles/keys/U101 \
+-H "Content-Type: application/json" \
+-d '{"name":"Yash","email":"yash@gmail.com","city":"Saharanpur","language":"Hindi","theme":"Light","notifications":true}'
+```
+
+Q4. Implement a Shopping Cart Application Using Riak KV
+
+Create a shopping cart for a user:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/shopping_cart/keys/U101 \
+-H "Content-Type: application/json" \
+-d '{"user_id":"U101","products":[{"product_id":"P101","name":"Protein Crisps","quantity":2,"price":100},{"product_id":"P102","name":"Juice","quantity":1,"price":50}],"total":250}'
+```
+
+Retrieve shopping cart:
+
+```bash
+curl http://localhost:8098/buckets/shopping_cart/keys/U101
+```
+
+Add a new product:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/shopping_cart/keys/U101 \
+-H "Content-Type: application/json" \
+-d '{"user_id":"U101","products":[{"product_id":"P101","name":"Protein Crisps","quantity":2,"price":100},{"product_id":"P102","name":"Juice","quantity":1,"price":50},{"product_id":"P103","name":"Cookies","quantity":1,"price":80}],"total":330}'
+```
+
+Update product quantity:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/shopping_cart/keys/U101 \
+-H "Content-Type: application/json" \
+-d '{"user_id":"U101","products":[{"product_id":"P101","name":"Protein Crisps","quantity":3,"price":100},{"product_id":"P102","name":"Juice","quantity":1,"price":50},{"product_id":"P103","name":"Cookies","quantity":1,"price":80}],"total":430}'
+```
+
+Remove a product from the cart:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/shopping_cart/keys/U101 \
+-H "Content-Type: application/json" \
+-d '{"user_id":"U101","products":[{"product_id":"P101","name":"Protein Crisps","quantity":3,"price":100},{"product_id":"P103","name":"Cookies","quantity":1,"price":80}],"total":380}'
+```
+
+Q5. Demonstrate the Structure of Data in Riak KV
+
+Riak stores data using three main components:
+
+- Bucket: A container used to group related data.
+- Key: A unique identifier for a stored value within a bucket.
+- Value: The actual data stored against a key.
+
+Store a string:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/demo/keys/message \
+-H "Content-Type: text/plain" \
+-d "Welcome to Riak KV"
+```
+
+Store a JSON document:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/demo/keys/student \
+-H "Content-Type: application/json" \
+-d '{"name":"Yash","course":"BCA","semester":5}'
+```
+
+Store a list:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/demo/keys/subjects \
+-H "Content-Type: application/json" \
+-d '["DBMS","Python","NoSQL","Cloud Computing"]'
+```
+
+Retrieve stored values:
+
+```bash
+curl http://localhost:8098/buckets/demo/keys/message
+
+curl http://localhost:8098/buckets/demo/keys/student
+
+curl http://localhost:8098/buckets/demo/keys/subjects
+```
+
+Explanation:
+
+The bucket stores related records, the key identifies a particular record, and the value contains the actual information. Values can be strings, JSON documents, numbers or lists.
+
+Q6. Demonstrate Consistency in Riak KV
+
+Riak KV supports configurable read and write quorum values.
+
+Create a record using write quorum:
+
+```bash
+curl -X PUT "http://localhost:8098/buckets/consistency/keys/101?w=quorum&dw=quorum" \
+-H "Content-Type: application/json" \
+-d '{"name":"Yash","city":"Saharanpur"}'
+```
+
+Read the record using read quorum:
+
+```bash
+curl "http://localhost:8098/buckets/consistency/keys/101?r=quorum"
+```
+
+Perform a write using ONE:
+
+```bash
+curl -X PUT "http://localhost:8098/buckets/consistency/keys/102?w=one" \
+-H "Content-Type: application/json" \
+-d '{"name":"Rahul","city":"Delhi"}'
+```
+
+Read using ONE:
+
+```bash
+curl "http://localhost:8098/buckets/consistency/keys/102?r=one"
+```
+
+Explanation:
+
+- ONE: Requires one replica response.
+- QUORUM: Requires a majority of the relevant replicas.
+- ALL: Requires all relevant replicas to respond.
+
+Riak uses replication and configurable quorum settings to balance availability and consistency. Actual quorum behavior depends on the bucket's replication factor and cluster configuration.
+
+Q7. Demonstrate Horizontal Scaling Using Riak KV
+
+Create multiple buckets:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/customers/keys/C101 \
+-H "Content-Type: application/json" \
+-d '{"name":"Yash","city":"Saharanpur"}'
+
+curl -X PUT http://localhost:8098/buckets/products/keys/P101 \
+-H "Content-Type: application/json" \
+-d '{"name":"Laptop","price":55000}'
+
+curl -X PUT http://localhost:8098/buckets/orders/keys/O101 \
+-H "Content-Type: application/json" \
+-d '{"customer_id":"C101","product_id":"P101","amount":55000}'
+```
+
+Insert multiple records using a shell loop:
+
+```bash
+for i in $(seq 1 100)
+do
+    curl -s -X PUT "http://localhost:8098/buckets/customers/keys/C$i" \
+    -H "Content-Type: application/json" \
+    -d "{\"customer_id\":\"C$i\",\"name\":\"Customer$i\"}"
+done
+```
+
+Retrieve a record:
+
+```bash
+curl http://localhost:8098/buckets/customers/keys/C50
+```
+
+Explanation:
+
+Riak distributes data across nodes using consistent hashing and a distributed ring.
+
+- Data is distributed across multiple nodes.
+- Replicas provide additional copies of data.
+- New nodes can be added to increase capacity.
+- The cluster redistributes data when membership changes.
+
+This is known as horizontal scaling.
+
+Q8. Implement a Transaction-Like Shopping Application Using Riak KV
+
+Create an initial shopping cart:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/cart/keys/U101 \
+-H "Content-Type: application/json" \
+-d '{"user_id":"U101","product":"Laptop","quantity":1,"price":50000,"total":50000}'
+```
+
+Retrieve the cart:
+
+```bash
+curl http://localhost:8098/buckets/cart/keys/U101
+```
+
+Add an item and update quantity:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/cart/keys/U101 \
+-H "Content-Type: application/json" \
+-d '{"user_id":"U101","product":"Laptop","quantity":2,"price":50000,"total":100000}'
+```
+
+Update the cart total:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/cart/keys/U101 \
+-H "Content-Type: application/json" \
+-d '{"user_id":"U101","product":"Laptop","quantity":2,"price":50000,"total":100000,"status":"Updated"}'
+```
+
+Retrieve the updated cart:
+
+```bash
+curl http://localhost:8098/buckets/cart/keys/U101
+```
+
+Explanation:
+
+Riak KV does not provide general multi-key ACID transactions like a relational database. These operations update one cart document at a time.
+
+If multiple related records need to be updated, application-level logic is required. Concurrent updates can also create conflicts that need to be handled.
+
+Q9. Implement Query-by-Data Functionality Using Riak KV
+
+Store user JSON documents:
+
+```bash
+curl -X PUT http://localhost:8098/buckets/users/keys/U101 \
+-H "Content-Type: application/json" \
+-d '{"name":"Yash","age":21,"city":"Saharanpur","interest":"Technology"}'
+
+curl -X PUT http://localhost:8098/buckets/users/keys/U102 \
+-H "Content-Type: application/json" \
+-d '{"name":"Rahul","age":22,"city":"Delhi","interest":"Sports"}'
+
+curl -X PUT http://localhost:8098/buckets/users/keys/U103 \
+-H "Content-Type: application/json" \
+-d '{"name":"Aman","age":21,"city":"Saharanpur","interest":"Music"}'
+```
+
+Create a Python file named `user_search.py`:
+
+```python
+import requests
+
+base_url = "http://localhost:8098/buckets/users/keys/"
+
+user_ids = ["U101", "U102", "U103"]
+
+users = []
+
+for user_id in user_ids:
+    response = requests.get(base_url + user_id)
+
+    if response.status_code == 200:
+        users.append(response.json())
+
+print("Users from Saharanpur:")
+
+for user in users:
+    if user["city"] == "Saharanpur":
+        print(user)
+
+print("Users aged 21:")
+
+for user in users:
+    if user["age"] == 21:
+        print(user)
+
+print("Users interested in Technology:")
+
+for user in users:
+    if user["interest"] == "Technology":
+        print(user)
+```
+
+Install the Python library:
+
+```bash
+pip install requests
+```
+
+Run the program:
+
+```bash
+python user_search.py
+```
+
+Explanation:
+
+Riak KV is primarily a key-value database. It does not automatically support arbitrary queries on JSON attributes. In this example, the application retrieves known records and filters them using Python.
+
+Q10. Implement Set Operations Using Riak KV
+
+Riak supports distributed set data types through its CRDT data type API.
+
+Create and activate a bucket type:
+
+```bash
+riak-admin bucket-type create crdt '{"props":{"allow_mult":true}}'
+
+riak-admin bucket-type activate crdt
+```
+
+Add user interests to a set:
+
+```bash
+curl -X PUT http://localhost:8098/types/crdt/buckets/interests/datatypes/U101 \
+-H "Content-Type: application/json" \
+-d '{"add":["Music","Sports","Technology"]}'
+```
+
+Add more interests:
+
+```bash
+curl -X POST http://localhost:8098/types/crdt/buckets/interests/datatypes/U101 \
+-H "Content-Type: application/json" \
+-d '{"add":["Travel"]}'
+```
+
+Retrieve the set:
+
+```bash
+curl http://localhost:8098/types/crdt/buckets/interests/datatypes/U101
+```
+
+Remove an interest:
+
+```bash
+curl -X POST http://localhost:8098/types/crdt/buckets/interests/datatypes/U101 \
+-H "Content-Type: application/json" \
+-d '{"remove":["Sports"]}'
+```
+
+Create another user's interest set:
+
+```bash
+curl -X PUT http://localhost:8098/types/crdt/buckets/interests/datatypes/U102 \
+-H "Content-Type: application/json" \
+-d '{"add":["Music","Travel","Gaming"]}'
+```
+
+Explanation:
+
+- Add: Adds an element to the set.
+- Remove: Removes an element from the set.
+- Membership: Check whether an element exists in the returned set.
+- Common elements: Compare two retrieved sets in application code to find their intersection.
+
+Riak's set data type handles distributed set updates using CRDT operations.
+
+Q11. Install and Configure Neo4j. Create Student, Course and Department Nodes
+
+Install Neo4j using Docker:
+
+```bash
+sudo docker pull neo4j:5
+```
+
+Start Neo4j:
+
+```bash
+sudo docker run -d \
+--name neo4j \
+-p 7474:7474 \
+-p 7687:7687 \
+-e NEO4J_AUTH=neo4j/password123 \
+neo4j:5
+```
+
+Open Neo4j Browser:
+
+```text
+http://localhost:7474
+```
+
+Login:
+
+```text
+Username: neo4j
+Password: password123
+```
+
+Create Student Nodes:
+
+```cypher
+CREATE (:Student {id:101, name:'Yash', city:'Saharanpur'});
+CREATE (:Student {id:102, name:'Rahul', city:'Delhi'});
+CREATE (:Student {id:103, name:'Aman', city:'Noida'});
+```
+
+Create Course Nodes:
+
+```cypher
+CREATE (:Course {name:'BCA'});
+CREATE (:Course {name:'BBA'});
+```
+
+Create Department Nodes:
+
+```cypher
+CREATE (:Department {name:'Computer Science'});
+CREATE (:Department {name:'Management'});
+```
+
+Create Relationships:
+
+```cypher
+MATCH (s:Student {id:101}), (c:Course {name:'BCA'})
+CREATE (s)-[:ENROLLED_IN]->(c);
+
+MATCH (s:Student {id:102}), (c:Course {name:'BCA'})
+CREATE (s)-[:ENROLLED_IN]->(c);
+
+MATCH (s:Student {id:103}), (c:Course {name:'BBA'})
+CREATE (s)-[:ENROLLED_IN]->(c);
+
+MATCH (c:Course {name:'BCA'}), (d:Department {name:'Computer Science'})
+CREATE (c)-[:BELONGS_TO]->(d);
+
+MATCH (c:Course {name:'BBA'}), (d:Department {name:'Management'})
+CREATE (c)-[:BELONGS_TO]->(d);
+```
+
+Display Graph:
+
+```cypher
+MATCH (s:Student)-[r]->(n)
+RETURN s,r,n;
+```
+
+Q12. Create a Social Network Graph Using Neo4j
+
+Create Person Nodes:
+
+```cypher
+CREATE (:Person {name:'Yash', age:21});
+CREATE (:Person {name:'Rahul', age:22});
+CREATE (:Person {name:'Aman', age:21});
+CREATE (:Person {name:'Priya', age:23});
+```
+
+Create Company Nodes:
+
+```cypher
+CREATE (:Company {name:'ABC Technologies'});
+CREATE (:Company {name:'XYZ Solutions'});
+```
+
+Create FRIENDS_WITH Relationships:
+
+```cypher
+MATCH (a:Person {name:'Yash'}), (b:Person {name:'Rahul'})
+CREATE (a)-[:FRIENDS_WITH]->(b);
+
+MATCH (a:Person {name:'Yash'}), (b:Person {name:'Aman'})
+CREATE (a)-[:FRIENDS_WITH]->(b);
+```
+
+Create FOLLOWS Relationships:
+
+```cypher
+MATCH (a:Person {name:'Rahul'}), (b:Person {name:'Yash'})
+CREATE (a)-[:FOLLOWS]->(b);
+
+MATCH (a:Person {name:'Priya'}), (b:Person {name:'Yash'})
+CREATE (a)-[:FOLLOWS]->(b);
+```
+
+Create WORKS_AT Relationships:
+
+```cypher
+MATCH (p:Person {name:'Yash'}), (c:Company {name:'ABC Technologies'})
+CREATE (p)-[:WORKS_AT]->(c);
+
+MATCH (p:Person {name:'Rahul'}), (c:Company {name:'XYZ Solutions'})
+CREATE (p)-[:WORKS_AT]->(c);
+```
+
+Find Yash's Friends:
+
+```cypher
+MATCH (p:Person {name:'Yash'})-[:FRIENDS_WITH]->(friend)
+RETURN friend;
+```
+
+Find Yash's Followers:
+
+```cypher
+MATCH (follower:Person)-[:FOLLOWS]->(p:Person {name:'Yash'})
+RETURN follower;
+```
+
+Find People Working at ABC Technologies:
+
+```cypher
+MATCH (p:Person)-[:WORKS_AT]->(c:Company {name:'ABC Technologies'})
+RETURN p;
+```
+
+Display Complete Graph:
+
+```cypher
+MATCH (a)-[r]->(b)
+RETURN a,r,b;
+```
+
+Q13. Create a Shopping and E-commerce Graph Using Neo4j
+
+Create Customer Nodes:
+
+```cypher
+CREATE (:Customer {id:101, name:'Yash'});
+CREATE (:Customer {id:102, name:'Rahul'});
+```
+
+Create Product Nodes:
+
+```cypher
+CREATE (:Product {id:201, name:'Laptop', price:55000});
+CREATE (:Product {id:202, name:'Mobile', price:25000});
+CREATE (:Product {id:203, name:'Headphones', price:2000});
+```
+
+Create Category Nodes:
+
+```cypher
+CREATE (:Category {name:'Electronics'});
+CREATE (:Category {name:'Accessories'});
+```
+
+Create Order Nodes:
+
+```cypher
+CREATE (:Order {id:301, date:'2026-11-01', total:57000});
+CREATE (:Order {id:302, date:'2026-11-02', total:25000});
+```
+
+Create Relationships:
+
+```cypher
+MATCH (p:Product {name:'Laptop'}), (c:Category {name:'Electronics'})
+CREATE (p)-[:BELONGS_TO]->(c);
+
+MATCH (p:Product {name:'Mobile'}), (c:Category {name:'Electronics'})
+CREATE (p)-[:BELONGS_TO]->(c);
+
+MATCH (p:Product {name:'Headphones'}), (c:Category {name:'Accessories'})
+CREATE (p)-[:BELONGS_TO]->(c);
+
+MATCH (c:Customer {id:101}), (o:Order {id:301})
+CREATE (c)-[:PLACED]->(o);
+
+MATCH (c:Customer {id:102}), (o:Order {id:302})
+CREATE (c)-[:PLACED]->(o);
+
+MATCH (o:Order {id:301}), (p:Product {name:'Laptop'})
+CREATE (o)-[:CONTAINS]->(p);
+
+MATCH (o:Order {id:301}), (p:Product {name:'Headphones'})
+CREATE (o)-[:CONTAINS]->(p);
+
+MATCH (o:Order {id:302}), (p:Product {name:'Mobile'})
+CREATE (o)-[:CONTAINS]->(p);
+```
+
+Find Products Purchased by Yash:
+
+```cypher
+MATCH (c:Customer {name:'Yash'})-[:PLACED]->(o:Order)-[:CONTAINS]->(p:Product)
+RETURN p.name, p.price;
+```
+
+Find All Customer Orders:
+
+```cypher
+MATCH (c:Customer)-[:PLACED]->(o:Order)
+RETURN c.name, o.id, o.total;
+```
+
+Find Products in Electronics Category:
+
+```cypher
+MATCH (p:Product)-[:BELONGS_TO]->(c:Category {name:'Electronics'})
+RETURN p;
+```
+
+Q14. Demonstrate Transactions, Consistency and Availability in Neo4j
+
+Create Initial Data:
+
+```cypher
+CREATE (:Account {id:101, name:'Yash', balance:10000});
+CREATE (:Account {id:102, name:'Rahul', balance:5000});
+```
+
+Start a Transaction in Cypher Shell:
+
+```text
+:begin
+```
+
+Perform Multiple Operations:
+
+```cypher
+MATCH (a:Account {id:101})
+SET a.balance = a.balance - 1000;
+
+MATCH (a:Account {id:102})
+SET a.balance = a.balance + 1000;
+
+CREATE (:Transaction {id:501, amount:1000, status:'Completed'});
+```
+
+Commit Transaction:
+
+```text
+:commit
+```
+
+Verify Updated Records:
+
+```cypher
+MATCH (a:Account)
+RETURN a;
+```
+
+Display Transactions:
+
+```cypher
+MATCH (t:Transaction)
+RETURN t;
+```
+
+Demonstrate Rollback:
+
+Start another transaction:
+
+```text
+:begin
+```
+
+Perform an operation:
+
+```cypher
+MATCH (a:Account {id:101})
+SET a.balance = 0;
+```
+
+Rollback:
+
+```text
+:rollback
+```
+
+Verify the balance:
+
+```cypher
+MATCH (a:Account {id:101})
+RETURN a.balance;
+```
+
+Explanation:
+
+- Transactions: Neo4j supports ACID transactions.
+- Atomicity: All operations in a transaction succeed together or are rolled back.
+- Consistency: Database constraints and transaction rules help maintain valid graph data.
+- Isolation: Concurrent transactions are managed by Neo4j's transaction system.
+- Durability: Committed changes are persisted.
+- Availability: Neo4j clustering and replication can support availability and failover when configured.
+
+Q15. Develop a Graph Database Application Using Neo4j and Python
+
+Project: Student Management Application
+
+Step 1. Install Python Neo4j Driver
+
+```bash
+pip install neo4j
+```
+
+Step 2. Start Neo4j
+
+Make sure the Neo4j Docker container is running.
+
+```bash
+sudo docker start neo4j
+```
+
+Step 3. Create a Python File
+
+File name: `neo4j_app.py`
+
+```python
+from neo4j import GraphDatabase
+
+URI = "bolt://localhost:7687"
+USERNAME = "neo4j"
+PASSWORD = "password123"
+
+driver = GraphDatabase.driver(
+    URI,
+    auth=(USERNAME, PASSWORD)
+)
+
+def create_student(student_id, name, city):
+    query = """
+    MERGE (s:Student {id: $id})
+    SET s.name = $name, s.city = $city
+    RETURN s
+    """
+
+    with driver.session() as session:
+        result = session.run(
+            query,
+            id=student_id,
+            name=name,
+            city=city
+        )
+        print("Student Created:", result.single()["s"])
+
+def get_students():
+    query = """
+    MATCH (s:Student)
+    RETURN s.id AS id, s.name AS name, s.city AS city
+    """
+
+    with driver.session() as session:
+        result = session.run(query)
+
+        for record in result:
+            print(record["id"], record["name"], record["city"])
+
+def update_student(student_id, city):
+    query = """
+    MATCH (s:Student {id: $id})
+    SET s.city = $city
+    RETURN s
+    """
+
+    with driver.session() as session:
+        result = session.run(
+            query,
+            id=student_id,
+            city=city
+        )
+        print("Student Updated:", result.single())
+
+def delete_student(student_id):
+    query = """
+    MATCH (s:Student {id: $id})
+    DETACH DELETE s
+    """
+
+    with driver.session() as session:
+        session.run(query, id=student_id)
+
+    print("Student Deleted")
+
+def create_course(student_id, course_name):
+    query = """
+    MATCH (s:Student {id: $id})
+    MERGE (c:Course {name: $course})
+    MERGE (s)-[:ENROLLED_IN]->(c)
+    """
+
+    with driver.session() as session:
+        session.run(
+            query,
+            id=student_id,
+            course=course_name
+        )
+
+    print("Course Relationship Created")
+
+def find_student_courses(student_id):
+    query = """
+    MATCH (s:Student {id: $id})-[:ENROLLED_IN]->(c:Course)
+    RETURN s.name AS student, c.name AS course
+    """
+
+    with driver.session() as session:
+        result = session.run(query)
+
+        for record in result:
+            print(record["student"], record["course"])
+
+create_student(101, "Yash", "Saharanpur")
+create_student(102, "Rahul", "Delhi")
+
+print("All Students:")
+get_students()
+
+update_student(101, "Noida")
+
+create_course(101, "BCA")
+create_course(102, "BBA")
+
+print("Student Courses:")
+find_student_courses(101)
+
+delete_student(102)
+
+print("Final Student Records:")
+get_students()
+
+driver.close()
+```
+
+Step 4. Run the Python Program
+
+```bash
+python neo4j_app.py
+```
+
+Expected Output:
+
+```text
+Student Created
+Student Created
+
+All Students:
+101 Yash Saharanpur
+102 Rahul Delhi
+
+Student Updated
+
+Course Relationship Created
+Course Relationship Created
+
+Student Courses:
+Yash BCA
+
+Student Deleted
+
+Final Student Records:
+101 Yash Noida
+```
+
+Explanation of Graph Database Features:
+
+1. CRUD Operations
+
+Neo4j supports CREATE, MATCH, SET and DELETE commands to manage nodes and relationships.
+
+2. Relationship-Based Queries
+
+Neo4j makes it easy to find connected data such as friends, followers, customers, products and courses.
+
+3. Scaling
+
+Neo4j supports clustering and distributed deployments. Its scaling options depend on the edition and deployment architecture.
+
+4. Availability
+
+Neo4j clustering provides replication and failover capabilities when configured correctly.
+
+5. Use Cases
+
+- Social Networks: Finding friends and followers.
+- Recommendation Systems: Suggesting products based on relationships.
+- Fraud Detection: Finding suspicious connections.
+- Knowledge Graphs: Connecting information and concepts.
+
